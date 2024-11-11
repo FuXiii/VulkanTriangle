@@ -53,6 +53,9 @@ jobs:
         sudo apt-get install libxinerama-dev
         sudo apt-get install libxcursor-dev
         sudo apt-get install libxi-dev
+        sudo apt-get install build-essential
+        sudo apt-get install libglu1-mesa-dev 
+        sudo apt-get install freeglut3-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
