@@ -47,7 +47,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - if: startsWith(matrix.os, 'ubuntu')
+    - name: Install dependencies
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install libxrandr-dev
         sudo apt-get install libxinerama-dev
