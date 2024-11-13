@@ -181,6 +181,12 @@ int main()
         assert(support_vulkan_version && "Not support Vulkan!");
     }
 
+    auto version_major = VK_VERSION_MAJOR(support_vulkan_version);
+    auto version_minor = VK_VERSION_MINOR(support_vulkan_version);
+    auto version_patch = VK_VERSION_PATCH(support_vulkan_version);
+
+    std::cout << "Support Vulkan: " << version_major << "." << version_minor << "." << version_patch << std::endl;
+
     driver.vkCreateInstance = (PFN_vkCreateInstance)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
     assert(driver.vkCreateInstance && "vkCreateInstance");
 
@@ -196,7 +202,7 @@ int main()
     std::vector<std::string> enable_instance_layers;
     enable_instance_layers.push_back("VK_LAYER_KHRONOS_validation");
     std::vector<const char *> instance_enabled_layer_names;
-    instance_enabled_layer_names.push_back(enable_instance_layers[0].c_str());
+    //instance_enabled_layer_names.push_back(enable_instance_layers[0].c_str());
 
     std::vector<const char *> instance_enabled_extension_names;
     instance_enabled_extension_names.push_back("VK_KHR_surface"); // VK_KHR_SURFACE_EXTENSION_NAME
@@ -466,7 +472,7 @@ int main()
         vk_swapchain_create_info_khr.pNext = nullptr;
         vk_swapchain_create_info_khr.flags = 0;
         vk_swapchain_create_info_khr.surface = vk_surface_khr;
-        vk_swapchain_create_info_khr.minImageCount = vk_surface_capabilities_khr.maxImageCount;
+        vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
         vk_swapchain_create_info_khr.imageFormat = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
         vk_swapchain_create_info_khr.imageColorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
         vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
@@ -491,6 +497,7 @@ int main()
         driver.vkGetSwapchainImagesKHR(vk_device, vk_swapchain_khr, &swapchain_image_count, nullptr);
         std::vector<VkImage> swapchain_images(swapchain_image_count);
         driver.vkGetSwapchainImagesKHR(vk_device, vk_swapchain_khr, &swapchain_image_count, swapchain_images.data());
+
         if (swapchain_images.empty())
         {
             throw std::runtime_error("Can not get swapchain images");
