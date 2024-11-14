@@ -2,12 +2,15 @@
 #define USE_WINDOWS_PLATFORM
 #elif defined(__linux) || defined(__linux__)
 #define USE_LINUX_PLATFORM
+#elif defined(__APPLE__)
+#define USE_APPLE_PLATFORM
 #endif
 
 #if defined(USE_WINDOWS_PLATFORM)
 #include <Windows.h>
-#elif defined(USE_LINUX_PLATFORM)
+#elif defined(USE_LINUX_PLATFORM) || defined(USE_APPLE_PLATFORM)
 #include <dlfcn.h>
+#include <stdlib.h>
 #endif
 
 #include <vulkan/vulkan.h>
@@ -163,7 +166,36 @@ int main()
         throw std::runtime_error("Can not found vulkan loader(libvulkan.so/libvulkan.so.1)");
     }
 
-    // loader
+    driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(library, "vkGetInstanceProcAddr");
+    assert(driver.vkGetInstanceProcAddr && "vkGetInstanceProcAddr");
+#elif defined(USE_APPLE_PLATFORM)
+    void *library = dlopen("libvulkan.dylib", RTLD_NOW | RTLD_LOCAL);
+    if (!library)
+    {
+        library = dlopen("libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL);
+    }
+    if (!library)
+    {
+        library = dlopen("libMoltenVK.dylib", RTLD_NOW | RTLD_LOCAL);
+    }
+    if (!library)
+    {
+        library = dlopen("vulkan.framework/vulkan", RTLD_NOW | RTLD_LOCAL);
+    }
+    if (!library)
+    {
+        library = dlopen("MoltenVK.framework/MoltenVK", RTLD_NOW | RTLD_LOCAL);
+    }
+    if (!library && getenv("DYLD_FALLBACK_LIBRARY_PATH") == NULL)
+    {
+        library = dlopen("/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL);
+    }
+
+    if (!library)
+    {
+        throw std::runtime_error("Can not found vulkan loader(MoltenVK)");
+    }
+
     driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(library, "vkGetInstanceProcAddr");
     assert(driver.vkGetInstanceProcAddr && "vkGetInstanceProcAddr");
 #else
@@ -266,6 +298,21 @@ int main()
             {
                 enabled_instance_extensions.push_back(extension_property.extensionName);
             }
+#elif defined(USE_APPLE_PLATFORM)
+            else if (std::string(extension_property.extensionName) == std::string("VK_EXT_metal_surface")) // VK_EXT_METAL_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
+            /* Deprecated and has been superseded by the VK_EXT_metal_surface extension on 2018-10-01
+                else if (std::string(extension_property.extensionName) == std::string("VK_MVK_macos_surface")) // VK_MVK_MACOS_SURFACE_EXTENSION_NAME
+                {
+                    enabled_instance_extensions.push_back(extension_property.extensionName);
+                }
+                else if (std::string(extension_property.extensionName) == std::string("VK_MVK_ios_surface")) // VK_MVK_IOS_SURFACE_EXTENSION_NAME
+                {
+                    enabled_instance_extensions.push_back(extension_property.extensionName);
+                }
+            */
 #else
             throw std::runtime_error("Surface Not compatible with this platform!");
 #endif
