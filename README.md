@@ -20,11 +20,16 @@
 
 ### 日志
 
+> 2024/11/14
+>
+> 动态判断加载 `Layer` 和 `Extension`
+
 > 2024/11/13
-> 
+>
 > 成功适配 `Deepin V23`
 >
 > >安装如下
+> >
 > > ``` console
 > > libx11-dev
 > > libxrandr-dev 
@@ -34,13 +39,14 @@
 > > freeglut3-dev
 > > ```
 >
-> > `VK_LAYER_KHRONOS_validation` 验证层找不到，非必须，目前暂时注释掉，`修改意见：`增加 `vkEnumerateInstanceLayerProperties(...)` 的使用。
+> > `VK_LAYER_KHRONOS_validation` 验证层找不到，非必须，目前暂时注释掉，`修改意见：` 增加 `vkEnumerateInstanceLayerProperties(...)` 的使用。
 >
-> > `vkGetPhysicalDeviceSurfaceCapabilitiesKHR(...)` 获取到的 `VkSurfaceCapabilitiesKHR::minImageCount` 不为`0`而`VkSurfaceCapabilitiesKHR::maxImageCount`为`0`。
+> > `vkGetPhysicalDeviceSurfaceCapabilitiesKHR(...)` 获取到的 `VkSurfaceCapabilitiesKHR::minImageCount` 不为 `0` 而 `VkSurfaceCapabilitiesKHR::maxImageCount` 为 `0`。
+>>
 >> ![test](./doc/surface_max_min_image.png)
+>>
 >> 增加了如下判断
+>>
 >> ```cpp
->>vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khrminImageCount,vk_surface_capabilities_khr.maxImageCount);
+>>vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khrminImageCount, vk_surface_capabilities_khr.maxImageCount);
 >> ```
-
-

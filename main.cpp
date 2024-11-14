@@ -28,12 +28,15 @@ static const uint32_t MY_FRAG_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b
 struct VkDriver
 {
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = nullptr;
-    PFN_vkEnumerateInstanceVersion vkEnumerateInstanceVersion=nullptr;
+    PFN_vkEnumerateInstanceVersion vkEnumerateInstanceVersion = nullptr;
+    PFN_vkEnumerateInstanceLayerProperties vkEnumerateInstanceLayerProperties = nullptr;
+    PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties = nullptr;
     PFN_vkCreateInstance vkCreateInstance = nullptr;
     PFN_vkDestroyInstance vkDestroyInstance = nullptr;
 
     PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices = nullptr;
     PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = nullptr;
+    PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties = nullptr;
     PFN_vkCreateDevice vkCreateDevice = nullptr;
     PFN_vkDestroyDevice vkDestroyDevice = nullptr;
 
@@ -187,6 +190,14 @@ int main()
 
     std::cout << "Support Vulkan: " << version_major << "." << version_minor << "." << version_patch << std::endl;
 
+    {
+        driver.vkEnumerateInstanceLayerProperties = (PFN_vkEnumerateInstanceLayerProperties)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceLayerProperties");
+        assert(driver.vkEnumerateInstanceLayerProperties && "vkEnumerateInstanceLayerProperties");
+
+        driver.vkEnumerateInstanceExtensionProperties = (PFN_vkEnumerateInstanceExtensionProperties)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceExtensionProperties");
+        assert(driver.vkEnumerateInstanceExtensionProperties && "vkEnumerateInstanceExtensionProperties");
+    }
+
     driver.vkCreateInstance = (PFN_vkCreateInstance)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
     assert(driver.vkCreateInstance && "vkCreateInstance");
 
@@ -200,31 +211,87 @@ int main()
     vk_application_info.apiVersion = support_vulkan_version;
 
     std::vector<std::string> enable_instance_layers;
-    enable_instance_layers.push_back("VK_LAYER_KHRONOS_validation");
-    std::vector<const char *> instance_enabled_layer_names;
-    //instance_enabled_layer_names.push_back(enable_instance_layers[0].c_str());
+    {
+        uint32_t instance_layer_count = 0;
+        driver.vkEnumerateInstanceLayerProperties(&instance_layer_count, nullptr);
+        std::vector<VkLayerProperties> layer_properties(instance_layer_count);
+        driver.vkEnumerateInstanceLayerProperties(&instance_layer_count, layer_properties.data());
 
-    std::vector<const char *> instance_enabled_extension_names;
-    instance_enabled_extension_names.push_back("VK_KHR_surface"); // VK_KHR_SURFACE_EXTENSION_NAME
+        for (auto &layer_property : layer_properties)
+        {
+            std::cout << "[layer]: " << layer_property.layerName << " - (" << layer_property.description << ")" << std::endl;
+
+            if (std::string(layer_property.layerName) == std::string("VK_LAYER_KHRONOS_validation"))
+            {
+                enable_instance_layers.push_back(layer_property.layerName);
+            }
+        }
+    }
+    std::vector<const char *> instance_enabled_layers;
+    for (auto &enable_layer : enable_instance_layers)
+    {
+        instance_enabled_layers.push_back(enable_layer.c_str());
+    }
+
+    std::vector<std::string> enabled_instance_extensions;
+    {
+        uint32_t instance_extension_count = 0;
+        driver.vkEnumerateInstanceExtensionProperties(nullptr, &instance_extension_count, nullptr);
+        std::vector<VkExtensionProperties> extension_properties(instance_extension_count);
+        driver.vkEnumerateInstanceExtensionProperties(nullptr, &instance_extension_count, extension_properties.data());
+
+        for (auto &extension_property : extension_properties)
+        {
+            std::cout << "[instance-extension]: " << extension_property.extensionName << std::endl;
+
+            if (std::string(extension_property.extensionName) == std::string(VK_KHR_SURFACE_EXTENSION_NAME)) // "VK_KHR_surface"
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
 #if defined(USE_WINDOWS_PLATFORM)
-    instance_enabled_extension_names.push_back("VK_KHR_win32_surface"); // VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+            else if (std::string(extension_property.extensionName) == std::string("VK_KHR_win32_surface")) // VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
 #elif defined(USE_LINUX_PLATFORM)
-    instance_enabled_extension_names.push_back("VK_KHR_wayland_surface"); // VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME
-    instance_enabled_extension_names.push_back("VK_KHR_xlib_surface");    // VK_KHR_XLIB_SURFACE_EXTENSION_NAME
-    instance_enabled_extension_names.push_back("VK_KHR_xcb_surface");     // VK_KHR_XCB_SURFACE_EXTENSION_NAME
+            else if (std::string(extension_property.extensionName) == std::string("VK_KHR_wayland_surface")) // VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
+            else if (std::string(extension_property.extensionName) == std::string("VK_KHR_xlib_surface")) // VK_KHR_XLIB_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
+            else if (std::string(extension_property.extensionName) == std::string("VK_KHR_xcb_surface")) // VK_KHR_XCB_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
 #else
-    throw std::runtime_error("Surface Not compatible with this platform!");
+            throw std::runtime_error("Surface Not compatible with this platform!");
 #endif
+        }
+    }
+
+    if (enabled_instance_extensions.empty())
+    {
+        throw std::runtime_error("Can not find Surface extension support!");
+    }
+
+    std::vector<const char *> instance_enabled_extensions;
+    for (auto &enable_extension : enabled_instance_extensions)
+    {
+        instance_enabled_extensions.push_back(enable_extension.c_str());
+    }
 
     VkInstanceCreateInfo vk_instance_create_info = {};
     vk_instance_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     vk_instance_create_info.pNext = nullptr;
     vk_instance_create_info.flags = 0;
     vk_instance_create_info.pApplicationInfo = &vk_application_info;
-    vk_instance_create_info.enabledLayerCount = instance_enabled_layer_names.size();
-    vk_instance_create_info.ppEnabledLayerNames = instance_enabled_layer_names.data();
-    vk_instance_create_info.enabledExtensionCount = instance_enabled_extension_names.size();
-    vk_instance_create_info.ppEnabledExtensionNames = instance_enabled_extension_names.data();
+    vk_instance_create_info.enabledLayerCount = instance_enabled_layers.size();
+    vk_instance_create_info.ppEnabledLayerNames = instance_enabled_layers.data();
+    vk_instance_create_info.enabledExtensionCount = instance_enabled_extensions.size();
+    vk_instance_create_info.ppEnabledExtensionNames = instance_enabled_extensions.data();
 
     VkInstance vk_instance = VK_NULL_HANDLE;
     VkResult result = driver.vkCreateInstance(&vk_instance_create_info, nullptr, &vk_instance);
@@ -245,6 +312,9 @@ int main()
 
     driver.vkGetPhysicalDeviceProperties = (PFN_vkGetPhysicalDeviceProperties)driver.vkGetInstanceProcAddr(vk_instance, "vkGetPhysicalDeviceProperties");
     assert(driver.vkGetPhysicalDeviceProperties && "vkEnumeratePhysicalDevices");
+
+    driver.vkEnumerateDeviceExtensionProperties = (PFN_vkEnumerateDeviceExtensionProperties)driver.vkGetInstanceProcAddr(vk_instance, "vkEnumerateDeviceExtensionProperties");
+    assert(driver.vkEnumerateDeviceExtensionProperties && "vkEnumerateDeviceExtensionProperties");
 
     driver.vkCreateDevice = (PFN_vkCreateDevice)driver.vkGetInstanceProcAddr(vk_instance, "vkCreateDevice");
     assert(driver.vkCreateDevice && "vkCreateDevice");
@@ -337,9 +407,34 @@ int main()
     }
 
     std::vector<std::string> enable_device_extensions;
-    enable_device_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    {
+        // Provided by VK_VERSION_1_0
+        uint32_t device_extension_count = 0;
+        driver.vkEnumerateDeviceExtensionProperties(target_physical_device, nullptr, &device_extension_count, nullptr);
+        std::vector<VkExtensionProperties> extension_properties(device_extension_count);
+        driver.vkEnumerateDeviceExtensionProperties(target_physical_device, nullptr, &device_extension_count, extension_properties.data());
+
+        for (auto &extension_property : extension_properties)
+        {
+            std::cout << "[device-extension]: " << extension_property.extensionName << std::endl;
+
+            if (std::string(extension_property.extensionName) == std::string(VK_KHR_SWAPCHAIN_EXTENSION_NAME)) // "VK_KHR_swapchain"
+            {
+                enable_device_extensions.push_back(extension_property.extensionName);
+            }
+        }
+    }
+
+    if (enable_device_extensions.empty())
+    {
+        throw std::runtime_error("Can not find Swapchain extension!");
+    }
+
     std::vector<const char *> device_enabled_extension_names;
-    device_enabled_extension_names.push_back(enable_device_extensions[0].c_str());
+    for (auto &enable_extension : enable_device_extensions)
+    {
+        device_enabled_extension_names.push_back(enable_extension.c_str());
+    }
 
     VkDeviceCreateInfo vk_device_create_info = {};
     vk_device_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -357,7 +452,7 @@ int main()
     result = driver.vkCreateDevice(target_physical_device, &vk_device_create_info, nullptr, &vk_device);
     if (result != VkResult::VK_SUCCESS)
     {
-        throw std::runtime_error("vkCreateDevice failed");
+        throw std::runtime_error("vkCreateDevice failed!");
     }
     std::cout << "vkCreateDevice success" << std::endl;
 

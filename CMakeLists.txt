@@ -4,6 +4,7 @@ project(VulkanTriangle)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 add_subdirectory(./thirdparty)
 
