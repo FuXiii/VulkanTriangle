@@ -67,11 +67,11 @@ jobs:
     - name: Install MacOS dependencies
       if: startsWith(matrix.os, 'macos')
       run: |
-        sudo brew install libxrandr-dev
-        sudo brew install libxinerama-dev
-        sudo brew install libxcursor-dev
-        sudo brew install libxi-dev
-        sudo brew install freeglut3-dev
+        brew install libxrandr-dev
+        brew install libxinerama-dev
+        brew install libxcursor-dev
+        brew install libxi-dev
+        brew install freeglut3-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
