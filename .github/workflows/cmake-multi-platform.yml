@@ -55,7 +55,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Install Linux dependencies
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install libxrandr-dev
@@ -63,6 +63,8 @@ jobs:
         sudo apt-get install libxcursor-dev
         sudo apt-get install libxi-dev
         sudo apt-get install freeglut3-dev
+
+    - name: Install MacOS dependencies
       if: startsWith(matrix.os, 'macos')
       run: |
         sudo brew install libxrandr-dev
