@@ -1,6 +1,6 @@
 # Vulkan Triangle
 
-该项目是使用纯 `Vulkan` 接口在 `Windows` 和 `Linux` 平台下渲染一个三角形的示例程序。只用于学习，禁止用于商业。
+该项目是使用纯 `Vulkan` 接口在 `Windows` 、 `Linux` 和 `macOS` 平台下渲染一个三角形的示例程序。只用于学习，禁止用于商业。
 
 ## 说明
 
