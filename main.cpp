@@ -149,7 +149,7 @@ int main()
     HMODULE library = LoadLibraryA("vulkan-1.dll");
     if (!library)
     {
-        throw std::runtime_error("Can not found vulkan loader(vulkan-1.dll)");
+        throw std::runtime_error("Can not found vulkan loader(vulkan-1.dll)!");
     }
 
     driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)GetProcAddress(library, "vkGetInstanceProcAddr");
@@ -163,7 +163,7 @@ int main()
 
     if (!library)
     {
-        throw std::runtime_error("Can not found vulkan loader(libvulkan.so/libvulkan.so.1)");
+        throw std::runtime_error("Can not found vulkan loader(libvulkan.so/libvulkan.so.1)!");
     }
 
     driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(library, "vkGetInstanceProcAddr");
@@ -193,7 +193,7 @@ int main()
 
     if (!library)
     {
-        throw std::runtime_error("Can not found vulkan loader(MoltenVK)");
+        throw std::runtime_error("Can not found vulkan loader(MoltenVK)!");
     }
 
     driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(library, "vkGetInstanceProcAddr");
@@ -344,7 +344,7 @@ int main()
     VkResult result = driver.vkCreateInstance(&vk_instance_create_info, nullptr, &vk_instance);
     if (result != VkResult::VK_SUCCESS)
     {
-        throw std::runtime_error("vkCreateInstance failed");
+        throw std::runtime_error("vkCreateInstance failed!");
     }
     else
     {
@@ -382,14 +382,14 @@ int main()
     result = driver.vkEnumeratePhysicalDevices(vk_instance, &physcial_device_count, nullptr);
     if (result != VkResult::VK_SUCCESS)
     {
-        throw std::runtime_error("vkEnumeratePhysicalDevices get count failed");
+        throw std::runtime_error("vkEnumeratePhysicalDevices get count failed!");
     }
 
     std::vector<VkPhysicalDevice> physcail_devices(physcial_device_count);
     result = driver.vkEnumeratePhysicalDevices(vk_instance, &physcial_device_count, physcail_devices.data());
     if (result != VkResult::VK_SUCCESS)
     {
-        throw std::runtime_error("vkEnumeratePhysicalDevices failed");
+        throw std::runtime_error("vkEnumeratePhysicalDevices failed!");
     }
 
     VkPhysicalDevice target_physical_device = VK_NULL_HANDLE;
@@ -414,7 +414,7 @@ int main()
 
     if (target_physical_device == VK_NULL_HANDLE)
     {
-        throw std::runtime_error("Not found suitable GPU");
+        throw std::runtime_error("Not found suitable GPU!");
     }
     else
     {
@@ -450,7 +450,7 @@ int main()
 
     if (vk_device_queue_create_infos.empty())
     {
-        throw std::runtime_error("Not found support graphics queue");
+        throw std::runtime_error("Not found support graphics queue!");
     }
 
     std::vector<std::string> enable_device_extensions;
@@ -502,6 +502,164 @@ int main()
         throw std::runtime_error("vkCreateDevice failed!");
     }
     std::cout << "vkCreateDevice success" << std::endl;
+
+    {
+        driver.vkCreateImage = (PFN_vkCreateImage)driver.vkGetDeviceProcAddr(vk_device, "vkCreateImage");
+        assert(driver.vkCreateImage && "vkCreateImage");
+
+        driver.vkDestroyImage = (PFN_vkDestroyImage)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyImage");
+        assert(driver.vkDestroyImage && "vkDestroyImage");
+
+        driver.vkCreateImageView = (PFN_vkCreateImageView)driver.vkGetDeviceProcAddr(vk_device, "vkCreateImageView");
+        assert(driver.vkCreateImageView && "vkCreateImageView");
+
+        driver.vkDestroyImageView = (PFN_vkDestroyImageView)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyImageView");
+        assert(driver.vkDestroyImageView && "vkDestroyImageView");
+
+        driver.vkCreateCommandPool = (PFN_vkCreateCommandPool)driver.vkGetDeviceProcAddr(vk_device, "vkCreateCommandPool");
+        assert(driver.vkCreateCommandPool && "vkCreateCommandPool");
+
+        driver.vkDestroyCommandPool = (PFN_vkDestroyCommandPool)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyCommandPool");
+        assert(driver.vkDestroyCommandPool && "vkDestroyCommandPool");
+
+        driver.vkAllocateCommandBuffers = (PFN_vkAllocateCommandBuffers)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateCommandBuffers");
+        assert(driver.vkAllocateCommandBuffers && "vkAllocateCommandBuffers");
+
+        driver.vkFreeCommandBuffers = (PFN_vkFreeCommandBuffers)driver.vkGetDeviceProcAddr(vk_device, "vkFreeCommandBuffers");
+        assert(driver.vkFreeCommandBuffers && "vkFreeCommandBuffers");
+
+        driver.vkGetBufferMemoryRequirements = (PFN_vkGetBufferMemoryRequirements)driver.vkGetDeviceProcAddr(vk_device, "vkGetBufferMemoryRequirements");
+        assert(driver.vkGetBufferMemoryRequirements && "vkGetBufferMemoryRequirements");
+
+        driver.vkGetImageMemoryRequirements = (PFN_vkGetImageMemoryRequirements)driver.vkGetDeviceProcAddr(vk_device, "vkGetImageMemoryRequirements");
+        assert(driver.vkGetImageMemoryRequirements && "vkGetImageMemoryRequirements");
+
+        driver.vkAllocateMemory = (PFN_vkAllocateMemory)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateMemory");
+        assert(driver.vkAllocateMemory && "vkAllocateMemory");
+
+        driver.vkFreeMemory = (PFN_vkFreeMemory)driver.vkGetDeviceProcAddr(vk_device, "vkFreeMemory");
+        assert(driver.vkFreeMemory && "vkFreeMemory");
+
+        driver.vkBindImageMemory = (PFN_vkBindImageMemory)driver.vkGetDeviceProcAddr(vk_device, "vkBindImageMemory");
+        assert(driver.vkBindImageMemory && "vkBindImageMemory");
+
+        driver.vkBindBufferMemory = (PFN_vkBindBufferMemory)driver.vkGetDeviceProcAddr(vk_device, "vkBindBufferMemory");
+        assert(driver.vkBindBufferMemory && "vkBindBufferMemory");
+
+        driver.vkCreateBuffer = (PFN_vkCreateBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkCreateBuffer");
+        assert(driver.vkCreateBuffer && "vkCreateBuffer");
+
+        driver.vkDestroyBuffer = (PFN_vkDestroyBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyBuffer");
+        assert(driver.vkDestroyBuffer && "vkDestroyBuffer");
+
+        driver.vkBeginCommandBuffer = (PFN_vkBeginCommandBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkBeginCommandBuffer");
+        assert(driver.vkBeginCommandBuffer && "vkBeginCommandBuffer");
+
+        driver.vkEndCommandBuffer = (PFN_vkEndCommandBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkEndCommandBuffer");
+        assert(driver.vkEndCommandBuffer && "vkEndCommandBuffer");
+
+        driver.vkMapMemory = (PFN_vkMapMemory)driver.vkGetDeviceProcAddr(vk_device, "vkMapMemory");
+        assert(driver.vkMapMemory && "vkMapMemory");
+
+        driver.vkUnmapMemory = (PFN_vkUnmapMemory)driver.vkGetDeviceProcAddr(vk_device, "vkUnmapMemory");
+        assert(driver.vkUnmapMemory && "vkUnmapMemory");
+
+        driver.vkCmdPipelineBarrier = (PFN_vkCmdPipelineBarrier)driver.vkGetDeviceProcAddr(vk_device, "vkCmdPipelineBarrier");
+        assert(driver.vkCmdPipelineBarrier && "vkCmdPipelineBarrier");
+
+        driver.vkCmdCopyBufferToImage = (PFN_vkCmdCopyBufferToImage)driver.vkGetDeviceProcAddr(vk_device, "vkCmdCopyBufferToImage");
+        assert(driver.vkCmdCopyBufferToImage && "vkCmdCopyBufferToImage");
+
+        driver.vkQueueSubmit = (PFN_vkQueueSubmit)driver.vkGetDeviceProcAddr(vk_device, "vkQueueSubmit");
+        assert(driver.vkQueueSubmit && "vkQueueSubmit");
+
+        driver.vkCreateFence = (PFN_vkCreateFence)driver.vkGetDeviceProcAddr(vk_device, "vkCreateFence");
+        assert(driver.vkCreateFence && "vkCreateFence");
+
+        driver.vkDestroyFence = (PFN_vkDestroyFence)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyFence");
+        assert(driver.vkDestroyFence && "vkDestroyFence");
+
+        driver.vkWaitForFences = (PFN_vkWaitForFences)driver.vkGetDeviceProcAddr(vk_device, "vkWaitForFences");
+        assert(driver.vkWaitForFences && "vkWaitForFences");
+
+        driver.vkCreateShaderModule = (PFN_vkCreateShaderModule)driver.vkGetDeviceProcAddr(vk_device, "vkCreateShaderModule");
+        assert(driver.vkCreateShaderModule && "vkCreateShaderModule");
+
+        driver.vkDestroyShaderModule = (PFN_vkDestroyShaderModule)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyShaderModule");
+        assert(driver.vkDestroyShaderModule && "vkDestroyShaderModule");
+
+        driver.vkCreateDescriptorPool = (PFN_vkCreateDescriptorPool)driver.vkGetDeviceProcAddr(vk_device, "vkCreateDescriptorPool");
+        assert(driver.vkCreateDescriptorPool && "vkCreateDescriptorPool");
+
+        driver.vkDestroyDescriptorPool = (PFN_vkDestroyDescriptorPool)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyDescriptorPool");
+        assert(driver.vkDestroyDescriptorPool && "vkDestroyDescriptorPool");
+
+        driver.vkCreateRenderPass = (PFN_vkCreateRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCreateRenderPass");
+        assert(driver.vkCreateRenderPass && "vkCreateRenderPass");
+
+        driver.vkDestroyRenderPass = (PFN_vkDestroyRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyRenderPass");
+        assert(driver.vkDestroyRenderPass && "vkDestroyRenderPass");
+
+        driver.vkCreateGraphicsPipelines = (PFN_vkCreateGraphicsPipelines)driver.vkGetDeviceProcAddr(vk_device, "vkCreateGraphicsPipelines");
+        assert(driver.vkCreateGraphicsPipelines && "vkCreateGraphicsPipelines");
+
+        driver.vkDestroyPipeline = (PFN_vkDestroyPipeline)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyPipeline");
+        assert(driver.vkDestroyPipeline && "vkDestroyPipeline");
+
+        driver.vkCreateDescriptorSetLayout = (PFN_vkCreateDescriptorSetLayout)driver.vkGetDeviceProcAddr(vk_device, "vkCreateDescriptorSetLayout");
+        assert(driver.vkCreateDescriptorSetLayout && "vkDestroyPipeline");
+
+        driver.vkDestroyDescriptorSetLayout = (PFN_vkDestroyDescriptorSetLayout)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyDescriptorSetLayout");
+        assert(driver.vkDestroyDescriptorSetLayout && "vkDestroyDescriptorSetLayout");
+
+        driver.vkAcquireNextImageKHR = (PFN_vkAcquireNextImageKHR)driver.vkGetDeviceProcAddr(vk_device, "vkAcquireNextImageKHR");
+        assert(driver.vkAcquireNextImageKHR && "vkAcquireNextImageKHR");
+
+        driver.vkCreateSampler = (PFN_vkCreateSampler)driver.vkGetDeviceProcAddr(vk_device, "vkCreateSampler");
+        assert(driver.vkCreateSampler && "vkCreateSampler");
+
+        driver.vkDestroySampler = (PFN_vkDestroySampler)driver.vkGetDeviceProcAddr(vk_device, "vkDestroySampler");
+        assert(driver.vkDestroySampler && "vkDestroySampler");
+
+        driver.vkAllocateDescriptorSets = (PFN_vkAllocateDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateDescriptorSets");
+        assert(driver.vkAllocateDescriptorSets && "vkAllocateDescriptorSets");
+
+        driver.vkFreeDescriptorSets = (PFN_vkFreeDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkFreeDescriptorSets");
+        assert(driver.vkFreeDescriptorSets && "vkFreeDescriptorSets");
+
+        driver.vkUpdateDescriptorSets = (PFN_vkUpdateDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkUpdateDescriptorSets");
+        assert(driver.vkUpdateDescriptorSets && "vkUpdateDescriptorSets");
+
+        driver.vkCreateFramebuffer = (PFN_vkCreateFramebuffer)driver.vkGetDeviceProcAddr(vk_device, "vkCreateFramebuffer");
+        assert(driver.vkCreateFramebuffer && "vkCreateFramebuffer");
+
+        driver.vkDestroyFramebuffer = (PFN_vkDestroyFramebuffer)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyFramebuffer");
+        assert(driver.vkDestroyFramebuffer && "vkDestroyFramebuffer");
+
+        driver.vkCmdBeginRenderPass = (PFN_vkCmdBeginRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBeginRenderPass");
+        assert(driver.vkCmdBeginRenderPass && "vkCmdBeginRenderPass");
+
+        driver.vkCmdEndRenderPass = (PFN_vkCmdEndRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCmdEndRenderPass");
+        assert(driver.vkCmdEndRenderPass && "vkCmdEndRenderPass");
+
+        driver.vkCmdBindPipeline = (PFN_vkCmdBindPipeline)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBindPipeline");
+        assert(driver.vkCmdBindPipeline && "vkCmdBindPipeline");
+
+        driver.vkCmdBindDescriptorSets = (PFN_vkCmdBindDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBindDescriptorSets");
+        assert(driver.vkCmdBindDescriptorSets && "vkCmdBindDescriptorSets");
+
+        driver.vkCmdSetViewport = (PFN_vkCmdSetViewport)driver.vkGetDeviceProcAddr(vk_device, "vkCmdSetViewport");
+        assert(driver.vkCmdSetViewport && "vkCmdSetViewport");
+
+        driver.vkCmdSetScissor = (PFN_vkCmdSetScissor)driver.vkGetDeviceProcAddr(vk_device, "vkCmdSetScissor");
+        assert(driver.vkCmdSetScissor && "vkCmdSetScissor");
+
+        driver.vkCmdPushConstants = (PFN_vkCmdPushConstants)driver.vkGetDeviceProcAddr(vk_device, "vkCmdPushConstants");
+        assert(driver.vkCmdPushConstants && "vkCmdPushConstants");
+
+        driver.vkCmdDraw = (PFN_vkCmdDraw)driver.vkGetDeviceProcAddr(vk_device, "vkCmdDraw");
+        assert(driver.vkCmdDraw && "vkCmdDraw");
+    }
 
     driver.vkGetDeviceQueue = (PFN_vkGetDeviceQueue)driver.vkGetDeviceProcAddr(vk_device, "vkGetDeviceQueue");
     assert(driver.vkGetDeviceQueue && "vkGetDeviceQueue");
@@ -558,19 +716,19 @@ int main()
 
         if (visible_coherent_memory_index == std::numeric_limits<uint32_t>::max() || device_local_memory_index == std::numeric_limits<uint32_t>::max())
         {
-            throw std::runtime_error("Can not find support memory");
+            throw std::runtime_error("Can not find support memory!");
         }
 
         if (!glfwInit())
         {
-            throw std::runtime_error("Can not init glfw");
+            throw std::runtime_error("Can not init glfw!");
         }
 
         GLFWwindow *window;
         int window_width = 512;
         int window_height = 512;
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
         window = glfwCreateWindow(window_width, window_height, "VulkanTriangle", NULL, NULL);
         VkSurfaceKHR vk_surface_khr = VK_NULL_HANDLE;
@@ -584,6 +742,9 @@ int main()
 
         driver.vkCreateSwapchainKHR = (PFN_vkCreateSwapchainKHR)driver.vkGetDeviceProcAddr(vk_device, "vkCreateSwapchainKHR");
         assert(driver.vkCreateSwapchainKHR && "vkCreateSwapchainKHR");
+
+        driver.vkDestroySwapchainKHR = (PFN_vkDestroySwapchainKHR)driver.vkGetDeviceProcAddr(vk_device, "vkDestroySwapchainKHR");
+        assert(driver.vkDestroySwapchainKHR && "vkDestroySwapchainKHR");
 
         VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
         driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical_device, vk_surface_khr, &vk_surface_capabilities_khr);
@@ -642,165 +803,7 @@ int main()
 
         if (swapchain_images.empty())
         {
-            throw std::runtime_error("Can not get swapchain images");
-        }
-
-        {
-            driver.vkCreateImage = (PFN_vkCreateImage)driver.vkGetDeviceProcAddr(vk_device, "vkCreateImage");
-            assert(driver.vkCreateImage && "vkCreateImage");
-
-            driver.vkDestroyImage = (PFN_vkDestroyImage)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyImage");
-            assert(driver.vkDestroyImage && "vkDestroyImage");
-
-            driver.vkCreateImageView = (PFN_vkCreateImageView)driver.vkGetDeviceProcAddr(vk_device, "vkCreateImageView");
-            assert(driver.vkCreateImageView && "vkCreateImageView");
-
-            driver.vkDestroyImageView = (PFN_vkDestroyImageView)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyImageView");
-            assert(driver.vkDestroyImageView && "vkDestroyImageView");
-
-            driver.vkCreateCommandPool = (PFN_vkCreateCommandPool)driver.vkGetDeviceProcAddr(vk_device, "vkCreateCommandPool");
-            assert(driver.vkCreateCommandPool && "vkCreateCommandPool");
-
-            driver.vkDestroyCommandPool = (PFN_vkDestroyCommandPool)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyCommandPool");
-            assert(driver.vkDestroyCommandPool && "vkDestroyCommandPool");
-
-            driver.vkAllocateCommandBuffers = (PFN_vkAllocateCommandBuffers)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateCommandBuffers");
-            assert(driver.vkAllocateCommandBuffers && "vkAllocateCommandBuffers");
-
-            driver.vkFreeCommandBuffers = (PFN_vkFreeCommandBuffers)driver.vkGetDeviceProcAddr(vk_device, "vkFreeCommandBuffers");
-            assert(driver.vkFreeCommandBuffers && "vkFreeCommandBuffers");
-
-            driver.vkGetBufferMemoryRequirements = (PFN_vkGetBufferMemoryRequirements)driver.vkGetDeviceProcAddr(vk_device, "vkGetBufferMemoryRequirements");
-            assert(driver.vkGetBufferMemoryRequirements && "vkGetBufferMemoryRequirements");
-
-            driver.vkGetImageMemoryRequirements = (PFN_vkGetImageMemoryRequirements)driver.vkGetDeviceProcAddr(vk_device, "vkGetImageMemoryRequirements");
-            assert(driver.vkGetImageMemoryRequirements && "vkGetImageMemoryRequirements");
-
-            driver.vkAllocateMemory = (PFN_vkAllocateMemory)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateMemory");
-            assert(driver.vkAllocateMemory && "vkAllocateMemory");
-
-            driver.vkFreeMemory = (PFN_vkFreeMemory)driver.vkGetDeviceProcAddr(vk_device, "vkFreeMemory");
-            assert(driver.vkFreeMemory && "vkFreeMemory");
-
-            driver.vkBindImageMemory = (PFN_vkBindImageMemory)driver.vkGetDeviceProcAddr(vk_device, "vkBindImageMemory");
-            assert(driver.vkBindImageMemory && "vkBindImageMemory");
-
-            driver.vkBindBufferMemory = (PFN_vkBindBufferMemory)driver.vkGetDeviceProcAddr(vk_device, "vkBindBufferMemory");
-            assert(driver.vkBindBufferMemory && "vkBindBufferMemory");
-
-            driver.vkCreateBuffer = (PFN_vkCreateBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkCreateBuffer");
-            assert(driver.vkCreateBuffer && "vkCreateBuffer");
-
-            driver.vkDestroyBuffer = (PFN_vkDestroyBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyBuffer");
-            assert(driver.vkDestroyBuffer && "vkDestroyBuffer");
-
-            driver.vkBeginCommandBuffer = (PFN_vkBeginCommandBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkBeginCommandBuffer");
-            assert(driver.vkBeginCommandBuffer && "vkBeginCommandBuffer");
-
-            driver.vkEndCommandBuffer = (PFN_vkEndCommandBuffer)driver.vkGetDeviceProcAddr(vk_device, "vkEndCommandBuffer");
-            assert(driver.vkEndCommandBuffer && "vkEndCommandBuffer");
-
-            driver.vkMapMemory = (PFN_vkMapMemory)driver.vkGetDeviceProcAddr(vk_device, "vkMapMemory");
-            assert(driver.vkMapMemory && "vkMapMemory");
-
-            driver.vkUnmapMemory = (PFN_vkUnmapMemory)driver.vkGetDeviceProcAddr(vk_device, "vkUnmapMemory");
-            assert(driver.vkUnmapMemory && "vkUnmapMemory");
-
-            driver.vkCmdPipelineBarrier = (PFN_vkCmdPipelineBarrier)driver.vkGetDeviceProcAddr(vk_device, "vkCmdPipelineBarrier");
-            assert(driver.vkCmdPipelineBarrier && "vkCmdPipelineBarrier");
-
-            driver.vkCmdCopyBufferToImage = (PFN_vkCmdCopyBufferToImage)driver.vkGetDeviceProcAddr(vk_device, "vkCmdCopyBufferToImage");
-            assert(driver.vkCmdCopyBufferToImage && "vkCmdCopyBufferToImage");
-
-            driver.vkQueueSubmit = (PFN_vkQueueSubmit)driver.vkGetDeviceProcAddr(vk_device, "vkQueueSubmit");
-            assert(driver.vkQueueSubmit && "vkQueueSubmit");
-
-            driver.vkCreateFence = (PFN_vkCreateFence)driver.vkGetDeviceProcAddr(vk_device, "vkCreateFence");
-            assert(driver.vkCreateFence && "vkCreateFence");
-
-            driver.vkDestroyFence = (PFN_vkDestroyFence)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyFence");
-            assert(driver.vkDestroyFence && "vkDestroyFence");
-
-            driver.vkWaitForFences = (PFN_vkWaitForFences)driver.vkGetDeviceProcAddr(vk_device, "vkWaitForFences");
-            assert(driver.vkWaitForFences && "vkWaitForFences");
-
-            driver.vkCreateShaderModule = (PFN_vkCreateShaderModule)driver.vkGetDeviceProcAddr(vk_device, "vkCreateShaderModule");
-            assert(driver.vkCreateShaderModule && "vkCreateShaderModule");
-
-            driver.vkDestroyShaderModule = (PFN_vkDestroyShaderModule)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyShaderModule");
-            assert(driver.vkDestroyShaderModule && "vkDestroyShaderModule");
-
-            driver.vkCreateDescriptorPool = (PFN_vkCreateDescriptorPool)driver.vkGetDeviceProcAddr(vk_device, "vkCreateDescriptorPool");
-            assert(driver.vkCreateDescriptorPool && "vkCreateDescriptorPool");
-
-            driver.vkDestroyDescriptorPool = (PFN_vkDestroyDescriptorPool)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyDescriptorPool");
-            assert(driver.vkDestroyDescriptorPool && "vkDestroyDescriptorPool");
-
-            driver.vkCreateRenderPass = (PFN_vkCreateRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCreateRenderPass");
-            assert(driver.vkCreateRenderPass && "vkCreateRenderPass");
-
-            driver.vkDestroyRenderPass = (PFN_vkDestroyRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyRenderPass");
-            assert(driver.vkDestroyRenderPass && "vkDestroyRenderPass");
-
-            driver.vkCreateGraphicsPipelines = (PFN_vkCreateGraphicsPipelines)driver.vkGetDeviceProcAddr(vk_device, "vkCreateGraphicsPipelines");
-            assert(driver.vkCreateGraphicsPipelines && "vkCreateGraphicsPipelines");
-
-            driver.vkDestroyPipeline = (PFN_vkDestroyPipeline)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyPipeline");
-            assert(driver.vkDestroyPipeline && "vkDestroyPipeline");
-
-            driver.vkCreateDescriptorSetLayout = (PFN_vkCreateDescriptorSetLayout)driver.vkGetDeviceProcAddr(vk_device, "vkCreateDescriptorSetLayout");
-            assert(driver.vkCreateDescriptorSetLayout && "vkDestroyPipeline");
-
-            driver.vkDestroyDescriptorSetLayout = (PFN_vkDestroyDescriptorSetLayout)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyDescriptorSetLayout");
-            assert(driver.vkDestroyDescriptorSetLayout && "vkDestroyDescriptorSetLayout");
-
-            driver.vkAcquireNextImageKHR = (PFN_vkAcquireNextImageKHR)driver.vkGetDeviceProcAddr(vk_device, "vkAcquireNextImageKHR");
-            assert(driver.vkAcquireNextImageKHR && "vkAcquireNextImageKHR");
-
-            driver.vkCreateSampler = (PFN_vkCreateSampler)driver.vkGetDeviceProcAddr(vk_device, "vkCreateSampler");
-            assert(driver.vkCreateSampler && "vkCreateSampler");
-
-            driver.vkDestroySampler = (PFN_vkDestroySampler)driver.vkGetDeviceProcAddr(vk_device, "vkDestroySampler");
-            assert(driver.vkDestroySampler && "vkDestroySampler");
-
-            driver.vkAllocateDescriptorSets = (PFN_vkAllocateDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkAllocateDescriptorSets");
-            assert(driver.vkAllocateDescriptorSets && "vkAllocateDescriptorSets");
-
-            driver.vkFreeDescriptorSets = (PFN_vkFreeDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkFreeDescriptorSets");
-            assert(driver.vkFreeDescriptorSets && "vkFreeDescriptorSets");
-
-            driver.vkUpdateDescriptorSets = (PFN_vkUpdateDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkUpdateDescriptorSets");
-            assert(driver.vkUpdateDescriptorSets && "vkUpdateDescriptorSets");
-
-            driver.vkCreateFramebuffer = (PFN_vkCreateFramebuffer)driver.vkGetDeviceProcAddr(vk_device, "vkCreateFramebuffer");
-            assert(driver.vkCreateFramebuffer && "vkCreateFramebuffer");
-
-            driver.vkDestroyFramebuffer = (PFN_vkDestroyFramebuffer)driver.vkGetDeviceProcAddr(vk_device, "vkDestroyFramebuffer");
-            assert(driver.vkDestroyFramebuffer && "vkDestroyFramebuffer");
-
-            driver.vkCmdBeginRenderPass = (PFN_vkCmdBeginRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBeginRenderPass");
-            assert(driver.vkCmdBeginRenderPass && "vkCmdBeginRenderPass");
-
-            driver.vkCmdEndRenderPass = (PFN_vkCmdEndRenderPass)driver.vkGetDeviceProcAddr(vk_device, "vkCmdEndRenderPass");
-            assert(driver.vkCmdEndRenderPass && "vkCmdEndRenderPass");
-
-            driver.vkCmdBindPipeline = (PFN_vkCmdBindPipeline)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBindPipeline");
-            assert(driver.vkCmdBindPipeline && "vkCmdBindPipeline");
-
-            driver.vkCmdBindDescriptorSets = (PFN_vkCmdBindDescriptorSets)driver.vkGetDeviceProcAddr(vk_device, "vkCmdBindDescriptorSets");
-            assert(driver.vkCmdBindDescriptorSets && "vkCmdBindDescriptorSets");
-
-            driver.vkCmdSetViewport = (PFN_vkCmdSetViewport)driver.vkGetDeviceProcAddr(vk_device, "vkCmdSetViewport");
-            assert(driver.vkCmdSetViewport && "vkCmdSetViewport");
-
-            driver.vkCmdSetScissor = (PFN_vkCmdSetScissor)driver.vkGetDeviceProcAddr(vk_device, "vkCmdSetScissor");
-            assert(driver.vkCmdSetScissor && "vkCmdSetScissor");
-
-            driver.vkCmdPushConstants = (PFN_vkCmdPushConstants)driver.vkGetDeviceProcAddr(vk_device, "vkCmdPushConstants");
-            assert(driver.vkCmdPushConstants && "vkCmdPushConstants");
-
-            driver.vkCmdDraw = (PFN_vkCmdDraw)driver.vkGetDeviceProcAddr(vk_device, "vkCmdDraw");
-            assert(driver.vkCmdDraw && "vkCmdDraw");
+            throw std::runtime_error("Can not get swapchain images!");
         }
 
         std::vector<VkImageView> swapchain_image_views(swapchain_image_count);
@@ -836,86 +839,6 @@ int main()
 
         // <Init Vulkan resource>
 
-        VkImage color_image = VK_NULL_HANDLE;
-        VkDeviceMemory color_image_memory = VK_NULL_HANDLE;
-
-        VkImageCreateInfo color_image_create_info = {};
-        {
-            color_image_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-            color_image_create_info.pNext = nullptr;
-            color_image_create_info.flags = 0;
-            color_image_create_info.imageType = VkImageType::VK_IMAGE_TYPE_2D;
-            color_image_create_info.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB; // VK_FORMAT_R32G32B32A32_SFLOAT
-            color_image_create_info.extent.width = vk_surface_capabilities_khr.currentExtent.width;
-            color_image_create_info.extent.height = vk_surface_capabilities_khr.currentExtent.height;
-            color_image_create_info.extent.depth = 1;
-            color_image_create_info.mipLevels = 1;
-            color_image_create_info.arrayLayers = 1;
-            color_image_create_info.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
-            color_image_create_info.tiling = VkImageTiling::VK_IMAGE_TILING_OPTIMAL;
-            color_image_create_info.usage = VkImageUsageFlagBits::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-            color_image_create_info.sharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
-            color_image_create_info.queueFamilyIndexCount = 0;
-            color_image_create_info.pQueueFamilyIndices = nullptr;
-            color_image_create_info.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
-        }
-
-        driver.vkCreateImage(vk_device, &color_image_create_info, nullptr, &color_image);
-
-        VkMemoryRequirements color_image_memory_require = {};
-        driver.vkGetImageMemoryRequirements(vk_device, color_image, &color_image_memory_require);
-
-        for (uint32_t memory_type_bit_index = 0; memory_type_bit_index < VK_MAX_MEMORY_TYPES; memory_type_bit_index++)
-        {
-            if (((color_image_memory_require.memoryTypeBits >> memory_type_bit_index) & 1) == 1)
-            {
-                uint32_t target_memory_type_index = device_local_memory_index;
-                if (memory_type_bit_index == target_memory_type_index)
-                {
-                    VkMemoryAllocateInfo vk_memory_allocate_info = {};
-                    vk_memory_allocate_info.sType = VkStructureType::VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-                    vk_memory_allocate_info.pNext = nullptr;
-                    vk_memory_allocate_info.allocationSize = color_image_memory_require.size;
-                    vk_memory_allocate_info.memoryTypeIndex = target_memory_type_index;
-
-                    VkResult result = driver.vkAllocateMemory(vk_device, &vk_memory_allocate_info, nullptr, &color_image_memory);
-                    if (result != VkResult::VK_SUCCESS)
-                    {
-                        throw std::runtime_error("Can not allocate color image memory");
-                    }
-
-                    result = driver.vkBindImageMemory(vk_device, color_image, color_image_memory, 0);
-                    if (result != VkResult::VK_SUCCESS)
-                    {
-                        throw std::runtime_error("Can not bind volume image memory");
-                    }
-                    break;
-                }
-            }
-        }
-
-        VkImageView color_image_view = VK_NULL_HANDLE;
-        {
-            VkImageViewCreateInfo color_image_view_create_info = {};
-            color_image_view_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            color_image_view_create_info.pNext = 0;
-            color_image_view_create_info.flags = 0;
-            color_image_view_create_info.image = color_image;
-            color_image_view_create_info.viewType = VkImageViewType::VK_IMAGE_VIEW_TYPE_2D;
-            color_image_view_create_info.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
-            color_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
-            color_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
-            color_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
-            color_image_view_create_info.components.a = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_A;
-            color_image_view_create_info.subresourceRange.aspectMask = VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT;
-            color_image_view_create_info.subresourceRange.baseMipLevel = 0;
-            color_image_view_create_info.subresourceRange.levelCount = 1;
-            color_image_view_create_info.subresourceRange.baseArrayLayer = 0;
-            color_image_view_create_info.subresourceRange.layerCount = 1;
-
-            driver.vkCreateImageView(vk_device, &color_image_view_create_info, nullptr, &color_image_view);
-        }
-
         VkShaderModule my_vertex_shader_module = VK_NULL_HANDLE;
         VkShaderModule my_fragment_shader_module = VK_NULL_HANDLE;
         {
@@ -929,7 +852,7 @@ int main()
             VkResult result = driver.vkCreateShaderModule(vk_device, &vk_shader_module_create_info, nullptr, &my_vertex_shader_module);
             if (result != VkResult::VK_SUCCESS)
             {
-                throw std::runtime_error("Can not create vertex shader module");
+                throw std::runtime_error("Can not create vertex shader module!");
             }
 
             vk_shader_module_create_info.codeSize = sizeof(MY_FRAG_SHADER_BIN);
@@ -938,7 +861,7 @@ int main()
             result = driver.vkCreateShaderModule(vk_device, &vk_shader_module_create_info, nullptr, &my_fragment_shader_module);
             if (result != VkResult::VK_SUCCESS)
             {
-                throw std::runtime_error("Can not create fragment shader module");
+                throw std::runtime_error("Can not create fragment shader module!");
             }
         }
 
@@ -984,7 +907,7 @@ int main()
             VkResult result = driver.vkCreateDescriptorPool(vk_device, &vk_descriptor_pool_create_info, nullptr, &vk_descriptor_pool);
             if (result != VkResult::VK_SUCCESS)
             {
-                throw std::runtime_error("Can not create VkDescriptorPool");
+                throw std::runtime_error("Can not create VkDescriptorPool!");
             }
         }
 
@@ -1220,7 +1143,7 @@ int main()
         if (volume_pipeline_create_result != VkResult::VK_SUCCESS)
         {
             std::cout << "volume_pipeline_create_result:" << volume_pipeline_create_result << std::endl;
-            throw std::runtime_error("Can not create rendering pipeline");
+            throw std::runtime_error("Can not create rendering pipeline!");
         }
 
         // Descriptor Set
@@ -1247,7 +1170,7 @@ int main()
             VkResult frame_buffer_create_result = driver.vkCreateFramebuffer(vk_device, &vk_frame_buffer_create_info, nullptr, &vk_frame_buffer);
             if (frame_buffer_create_result != VkResult::VK_SUCCESS)
             {
-                throw std::runtime_error("Can not create Framebuffer");
+                throw std::runtime_error("Can not create Framebuffer!");
             }
 
             vk_frame_buffers.push_back(vk_frame_buffer);
@@ -1295,16 +1218,124 @@ int main()
                 driver.vkCreateFence(vk_device, &vk_fence_create_info, nullptr, &require_next_image_fence);
             }
             VkResult next_image_require_result = driver.vkAcquireNextImageKHR(vk_device, vk_swapchain_khr, UINT64_MAX - 1, VK_NULL_HANDLE, require_next_image_fence, &next_image_index);
+
+            // if (next_image_require_result != VkResult::VK_SUCCESS)
+            if (next_image_require_result == VkResult::VK_ERROR_OUT_OF_DATE_KHR)
+            {
+                driver.vkDestroyFence(vk_device, require_next_image_fence, nullptr);
+
+                //  TODO: resize in here
+                {
+                    for (auto &vk_frame_buffer : vk_frame_buffers)
+                    {
+                        driver.vkDestroyFramebuffer(vk_device, vk_frame_buffer, nullptr);
+                    }
+                    vk_frame_buffers.clear();
+
+                    for (auto &swapchain_image_view : swapchain_image_views)
+                    {
+                        driver.vkDestroyImageView(vk_device, swapchain_image_view, nullptr);
+                    }
+                    swapchain_image_views.clear();
+                    swapchain_images.clear();
+
+                    driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical_device, vk_surface_khr, &vk_surface_capabilities_khr);
+
+                    VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
+                    vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+                    vk_swapchain_create_info_khr.pNext = nullptr;
+                    vk_swapchain_create_info_khr.flags = 0;
+                    vk_swapchain_create_info_khr.surface = vk_surface_khr;
+                    vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
+                    vk_swapchain_create_info_khr.imageFormat = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
+                    vk_swapchain_create_info_khr.imageColorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+                    vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
+                    vk_swapchain_create_info_khr.imageArrayLayers = 1;
+                    vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+                    vk_swapchain_create_info_khr.imageSharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
+                    vk_swapchain_create_info_khr.queueFamilyIndexCount = 0;
+                    vk_swapchain_create_info_khr.pQueueFamilyIndices = nullptr;
+                    vk_swapchain_create_info_khr.preTransform = vk_surface_capabilities_khr.currentTransform;
+                    vk_swapchain_create_info_khr.compositeAlpha = VkCompositeAlphaFlagBitsKHR::VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+                    vk_swapchain_create_info_khr.presentMode = is_swapchain_support_fifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : vk_present_mode_khrs[0];
+                    vk_swapchain_create_info_khr.clipped = VK_TRUE;
+                    vk_swapchain_create_info_khr.oldSwapchain = vk_swapchain_khr;
+
+                    VkResult new_create_swapchain_result = driver.vkCreateSwapchainKHR(vk_device, &vk_swapchain_create_info_khr, nullptr, &vk_swapchain_khr);
+
+                    if (new_create_swapchain_result == VkResult::VK_SUCCESS)
+                    {
+                        driver.vkDestroySwapchainKHR(vk_device, vk_swapchain_create_info_khr.oldSwapchain, nullptr);
+
+                        window_width = vk_surface_capabilities_khr.currentExtent.width;
+                        window_height = vk_surface_capabilities_khr.currentExtent.height;
+                    }
+
+                    driver.vkGetSwapchainImagesKHR(vk_device, vk_swapchain_khr, &swapchain_image_count, nullptr);
+                    swapchain_images.resize(swapchain_image_count);
+                    driver.vkGetSwapchainImagesKHR(vk_device, vk_swapchain_khr, &swapchain_image_count, swapchain_images.data());
+
+                    if (swapchain_images.empty())
+                    {
+                        throw std::runtime_error("Can not get swapchain images!");
+                    }
+
+                    swapchain_image_views.resize(swapchain_image_count);
+                    for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchain_image_count; swapchain_image_view_index++)
+                    {
+                        VkImageViewCreateInfo vk_image_view_create_info = {};
+                        vk_image_view_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+                        vk_image_view_create_info.pNext = nullptr;
+                        vk_image_view_create_info.flags = 0;
+                        vk_image_view_create_info.image = swapchain_images[swapchain_image_view_index];
+                        vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
+                        vk_image_view_create_info.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
+                        vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
+                        vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
+                        vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
+                        vk_image_view_create_info.components.a = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_A;
+                        vk_image_view_create_info.subresourceRange.aspectMask = VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT;
+                        vk_image_view_create_info.subresourceRange.baseMipLevel = 0;
+                        vk_image_view_create_info.subresourceRange.levelCount = 1;
+                        vk_image_view_create_info.subresourceRange.baseArrayLayer = 0;
+                        vk_image_view_create_info.subresourceRange.layerCount = 1;
+
+                        driver.vkCreateImageView(vk_device, &vk_image_view_create_info, nullptr, &swapchain_image_views[swapchain_image_view_index]);
+                    }
+
+                    for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchain_image_views.size(); swapchain_image_view_index++)
+                    {
+                        std::vector<VkImageView> frame_buffer;
+                        frame_buffer.push_back(swapchain_image_views[swapchain_image_view_index]);
+
+                        VkFramebufferCreateInfo vk_frame_buffer_create_info = {};
+                        vk_frame_buffer_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+                        vk_frame_buffer_create_info.pNext = nullptr;
+                        vk_frame_buffer_create_info.flags = 0;
+                        vk_frame_buffer_create_info.renderPass = vk_render_pass;
+                        vk_frame_buffer_create_info.attachmentCount = frame_buffer.size();
+                        vk_frame_buffer_create_info.pAttachments = frame_buffer.data();
+                        vk_frame_buffer_create_info.width = window_width;
+                        vk_frame_buffer_create_info.height = window_height;
+                        vk_frame_buffer_create_info.layers = 1;
+
+                        VkFramebuffer vk_frame_buffer = VK_NULL_HANDLE;
+                        VkResult frame_buffer_create_result = driver.vkCreateFramebuffer(vk_device, &vk_frame_buffer_create_info, nullptr, &vk_frame_buffer);
+                        if (frame_buffer_create_result != VkResult::VK_SUCCESS)
+                        {
+                            throw std::runtime_error("Can not create Framebuffer!");
+                        }
+
+                        vk_frame_buffers.push_back(vk_frame_buffer);
+                    }
+                }
+
+                continue;
+            }
+
             {
                 driver.vkWaitForFences(vk_device, 1, &require_next_image_fence, VK_TRUE, UINT64_MAX);
                 driver.vkDestroyFence(vk_device, require_next_image_fence, nullptr);
-            }
-
-            if (next_image_require_result != VkResult::VK_SUCCESS)
-            {
-                throw std::runtime_error("Miss match swapchain");
-
-                // TODO: resize in here
             }
 
             VkCommandBuffer vk_command_buffer = VK_NULL_HANDLE;
@@ -1350,6 +1381,14 @@ int main()
             vk_render_pass_begin_info.renderArea.extent.height = window_height;
             vk_render_pass_begin_info.clearValueCount = vk_clear_values.size();
             vk_render_pass_begin_info.pClearValues = vk_clear_values.data();
+
+            {
+                vk_viewport.width = window_width;
+                vk_viewport.height = window_height;
+
+                scissor.extent.width = window_width;
+                scissor.extent.height = window_height;
+            }
 
             driver.vkCmdBeginRenderPass(vk_command_buffer, &vk_render_pass_begin_info, VkSubpassContents::VK_SUBPASS_CONTENTS_INLINE);
             driver.vkCmdBindPipeline(vk_command_buffer, VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS, volume_pipeline);
@@ -1422,17 +1461,9 @@ int main()
             driver.vkDestroyImageView(vk_device, vk_image_view_item, nullptr);
         }
 
-        driver.vkDestroyImageView(vk_device, color_image_view, nullptr);
-
-        driver.vkFreeMemory(vk_device, color_image_memory, nullptr);
-        driver.vkDestroyImage(vk_device, color_image, nullptr);
-
         // driver.vkFreeCommandBuffers(vk_device, vk_command_pool, 1, &vk_command_buffer);
 
         driver.vkDestroyCommandPool(vk_device, vk_command_pool, nullptr);
-
-        driver.vkDestroySwapchainKHR = (PFN_vkDestroySwapchainKHR)driver.vkGetDeviceProcAddr(vk_device, "vkDestroySwapchainKHR");
-        assert(driver.vkDestroySwapchainKHR && "vkDestroySwapchainKHR");
 
         driver.vkDestroySwapchainKHR(vk_device, vk_swapchain_khr, nullptr);
         driver.vkDestroySurfaceKHR(vk_instance, vk_surface_khr, nullptr);
