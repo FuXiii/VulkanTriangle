@@ -53,6 +53,8 @@ struct VkDriver
 
     PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties = nullptr;
 
+    PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = nullptr;
+
     PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR = nullptr;
     PFN_vkCreateSwapchainKHR vkCreateSwapchainKHR = nullptr;
     PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR = nullptr;
@@ -734,6 +736,9 @@ int main()
         VkSurfaceKHR vk_surface_khr = VK_NULL_HANDLE;
         glfwCreateWindowSurface(vk_instance, window, NULL, &vk_surface_khr);
 
+        driver.vkGetPhysicalDeviceSurfaceFormatsKHR = (PFN_vkGetPhysicalDeviceSurfaceFormatsKHR)driver.vkGetInstanceProcAddr(vk_instance, "vkGetPhysicalDeviceSurfaceFormatsKHR");
+        assert(driver.vkGetPhysicalDeviceSurfaceFormatsKHR && "vkGetPhysicalDeviceSurfaceFormatsKHR");
+
         driver.vkDestroySurfaceKHR = (PFN_vkDestroySurfaceKHR)driver.vkGetInstanceProcAddr(vk_instance, "vkDestroySurfaceKHR");
         assert(driver.vkDestroySurfaceKHR && "vkDestroySurfaceKHR");
 
@@ -770,14 +775,28 @@ int main()
             }
         }
 
+        uint32_t surface_format_count = 0;
+        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, nullptr);
+        std::vector<VkSurfaceFormatKHR> surface_formats(surface_format_count);
+        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, surface_formats.data());
+        bool is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE = false;
+        for (auto &surface_format : surface_formats)
+        {
+            if (surface_format.format == VkFormat::VK_FORMAT_B8G8R8A8_SRGB && surface_format.colorSpace == VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            {
+                is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE = true;
+                break;
+            }
+        }
+
         VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
         vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
         vk_swapchain_create_info_khr.pNext = nullptr;
         vk_swapchain_create_info_khr.flags = 0;
         vk_swapchain_create_info_khr.surface = vk_surface_khr;
         vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
-        vk_swapchain_create_info_khr.imageFormat = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
-        vk_swapchain_create_info_khr.imageColorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+        vk_swapchain_create_info_khr.imageFormat = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
+        vk_swapchain_create_info_khr.imageColorSpace = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR : surface_formats[0].colorSpace;
         vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
         vk_swapchain_create_info_khr.imageArrayLayers = 1;
         vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -1247,8 +1266,8 @@ int main()
                     vk_swapchain_create_info_khr.flags = 0;
                     vk_swapchain_create_info_khr.surface = vk_surface_khr;
                     vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
-                    vk_swapchain_create_info_khr.imageFormat = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
-                    vk_swapchain_create_info_khr.imageColorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+                    vk_swapchain_create_info_khr.imageFormat = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
+                    vk_swapchain_create_info_khr.imageColorSpace = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR : surface_formats[0].colorSpace;
                     vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
                     vk_swapchain_create_info_khr.imageArrayLayers = 1;
                     vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
