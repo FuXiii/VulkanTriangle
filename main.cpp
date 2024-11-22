@@ -834,7 +834,7 @@ int main()
             vk_image_view_create_info.flags = 0;
             vk_image_view_create_info.image = swapchain_images[swapchain_image_view_index];
             vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
-            vk_image_view_create_info.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
+            vk_image_view_create_info.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
             vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
             vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
             vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
@@ -953,7 +953,7 @@ int main()
         VkAttachmentDescription color_attachment_description = {};
         {
             color_attachment_description.flags = 0;
-            color_attachment_description.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
+            color_attachment_description.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
             color_attachment_description.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
             color_attachment_description.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
             color_attachment_description.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
@@ -1308,7 +1308,7 @@ int main()
                         vk_image_view_create_info.flags = 0;
                         vk_image_view_create_info.image = swapchain_images[swapchain_image_view_index];
                         vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
-                        vk_image_view_create_info.format = VkFormat::VK_FORMAT_B8G8R8A8_SRGB;
+                        vk_image_view_create_info.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
                         vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
                         vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
                         vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
