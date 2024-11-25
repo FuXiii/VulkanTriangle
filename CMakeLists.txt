@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 add_subdirectory(./thirdparty)
 
-add_executable(${PROJECT_NAME} ./main.cpp)
+add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)
 
 add_dependencies(${PROJECT_NAME} glfw)
 

@@ -24,6 +24,8 @@
 
 #include <glm/ext.hpp>
 
+#include "VkString.h"
+
 static const uint32_t MY_VERT_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b, 0x00000034, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0008000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x00000008, 0x00000016, 0x0000001f, 0x00030003, 0x00000002, 0x000001c2, 0x00040005, 0x00000004, 0x6e69616d, 0x00000000, 0x00060005, 0x00000008, 0x565f6c67, 0x65747265, 0x646e4978, 0x00007865, 0x00060005, 0x00000014, 0x505f6c67, 0x65567265, 0x78657472, 0x00000000, 0x00060006, 0x00000014, 0x00000000, 0x505f6c67, 0x7469736f, 0x006e6f69, 0x00070006, 0x00000014, 0x00000001, 0x505f6c67, 0x746e696f, 0x657a6953, 0x00000000, 0x00070006, 0x00000014, 0x00000002, 0x435f6c67, 0x4470696c, 0x61747369, 0x0065636e, 0x00070006, 0x00000014, 0x00000003, 0x435f6c67, 0x446c6c75, 0x61747369, 0x0065636e, 0x00030005, 0x00000016, 0x00000000, 0x00040005, 0x0000001f, 0x6f6c6f63, 0x00000072, 0x00040047, 0x00000008, 0x0000000b, 0x0000002a, 0x00050048, 0x00000014, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x00000014, 0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x00000014, 0x00000002, 0x0000000b, 0x00000003, 0x00050048, 0x00000014, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x00000014, 0x00000002, 0x00040047, 0x0000001f, 0x0000001e, 0x00000000, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00040015, 0x00000006, 0x00000020, 0x00000001, 0x00040020, 0x00000007, 0x00000001, 0x00000006, 0x0004003b, 0x00000007, 0x00000008, 0x00000001, 0x0004002b, 0x00000006, 0x0000000a, 0x00000000, 0x00020014, 0x0000000b, 0x00030016, 0x0000000f, 0x00000020, 0x00040017, 0x00000010, 0x0000000f, 0x00000004, 0x00040015, 0x00000011, 0x00000020, 0x00000000, 0x0004002b, 0x00000011, 0x00000012, 0x00000001, 0x0004001c, 0x00000013, 0x0000000f, 0x00000012, 0x0006001e, 0x00000014, 0x00000010, 0x0000000f, 0x00000013, 0x00000013, 0x00040020, 0x00000015, 0x00000003, 0x00000014, 0x0004003b, 0x00000015, 0x00000016, 0x00000003, 0x0004002b, 0x0000000f, 0x00000017, 0x00000000, 0x0004002b, 0x0000000f, 0x00000018, 0xbf000000, 0x0004002b, 0x0000000f, 0x00000019, 0x3f800000, 0x0007002c, 0x00000010, 0x0000001a, 0x00000017, 0x00000018, 0x00000017, 0x00000019, 0x00040020, 0x0000001b, 0x00000003, 0x00000010, 0x00040017, 0x0000001d, 0x0000000f, 0x00000003, 0x00040020, 0x0000001e, 0x00000003, 0x0000001d, 0x0004003b, 0x0000001e, 0x0000001f, 0x00000003, 0x0006002c, 0x0000001d, 0x00000020, 0x00000019, 0x00000017, 0x00000017, 0x0004002b, 0x00000006, 0x00000023, 0x00000001, 0x0004002b, 0x0000000f, 0x00000027, 0x3f000000, 0x0007002c, 0x00000010, 0x00000028, 0x00000027, 0x00000027, 0x00000017, 0x00000019, 0x0006002c, 0x0000001d, 0x0000002a, 0x00000017, 0x00000019, 0x00000017, 0x0004002b, 0x00000006, 0x0000002d, 0x00000002, 0x0007002c, 0x00000010, 0x00000031, 0x00000018, 0x00000027, 0x00000017, 0x00000019, 0x0006002c, 0x0000001d, 0x00000033, 0x00000017, 0x00000017, 0x00000019, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x0004003d, 0x00000006, 0x00000009, 0x00000008, 0x000500aa, 0x0000000b, 0x0000000c, 0x00000009, 0x0000000a, 0x000300f7, 0x0000000e, 0x00000000, 0x000400fa, 0x0000000c, 0x0000000d, 0x00000021, 0x000200f8, 0x0000000d, 0x00050041, 0x0000001b, 0x0000001c, 0x00000016, 0x0000000a, 0x0003003e, 0x0000001c, 0x0000001a, 0x0003003e, 0x0000001f, 0x00000020, 0x000200f9, 0x0000000e, 0x000200f8, 0x00000021, 0x0004003d, 0x00000006, 0x00000022, 0x00000008, 0x000500aa, 0x0000000b, 0x00000024, 0x00000022, 0x00000023, 0x000300f7, 0x00000026, 0x00000000, 0x000400fa, 0x00000024, 0x00000025, 0x0000002b, 0x000200f8, 0x00000025, 0x00050041, 0x0000001b, 0x00000029, 0x00000016, 0x0000000a, 0x0003003e, 0x00000029, 0x00000028, 0x0003003e, 0x0000001f, 0x0000002a, 0x000200f9, 0x00000026, 0x000200f8, 0x0000002b, 0x0004003d, 0x00000006, 0x0000002c, 0x00000008, 0x000500aa, 0x0000000b, 0x0000002e, 0x0000002c, 0x0000002d, 0x000300f7, 0x00000030, 0x00000000, 0x000400fa, 0x0000002e, 0x0000002f, 0x00000030, 0x000200f8, 0x0000002f, 0x00050041, 0x0000001b, 0x00000032, 0x00000016, 0x0000000a, 0x0003003e, 0x00000032, 0x00000031, 0x0003003e, 0x0000001f, 0x00000033, 0x000200f9, 0x00000030, 0x000200f8, 0x00000030, 0x000200f9, 0x00000026, 0x000200f8, 0x00000026, 0x000200f9, 0x0000000e, 0x000200f8, 0x0000000e, 0x000100fd, 0x00010038};
 
 static const uint32_t MY_FRAG_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b, 0x00000013, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0007000f, 0x00000004, 0x00000004, 0x6e69616d, 0x00000000, 0x00000009, 0x0000000c, 0x00030010, 0x00000004, 0x00000007, 0x00030003, 0x00000002, 0x000001c2, 0x00040005, 0x00000004, 0x6e69616d, 0x00000000, 0x00050005, 0x00000009, 0x4374756f, 0x726f6c6f, 0x00000000, 0x00040005, 0x0000000c, 0x6f6c6f63, 0x00000072, 0x00040047, 0x00000009, 0x0000001e, 0x00000000, 0x00040047, 0x0000000c, 0x0000001e, 0x00000000, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x00040017, 0x00000007, 0x00000006, 0x00000004, 0x00040020, 0x00000008, 0x00000003, 0x00000007, 0x0004003b, 0x00000008, 0x00000009, 0x00000003, 0x00040017, 0x0000000a, 0x00000006, 0x00000003, 0x00040020, 0x0000000b, 0x00000001, 0x0000000a, 0x0004003b, 0x0000000b, 0x0000000c, 0x00000001, 0x0004002b, 0x00000006, 0x0000000e, 0x3f800000, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x0004003d, 0x0000000a, 0x0000000d, 0x0000000c, 0x00050051, 0x00000006, 0x0000000f, 0x0000000d, 0x00000000, 0x00050051, 0x00000006, 0x00000010, 0x0000000d, 0x00000001, 0x00050051, 0x00000006, 0x00000011, 0x0000000d, 0x00000002, 0x00070050, 0x00000007, 0x00000012, 0x0000000f, 0x00000010, 0x00000011, 0x0000000e, 0x0003003e, 0x00000009, 0x00000012, 0x000100fd, 0x00010038};
@@ -40,6 +42,9 @@ struct VkDriver
     PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices = nullptr;
     PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = nullptr;
     PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties = nullptr;
+
+    PFN_vkGetPhysicalDeviceFormatProperties vkGetPhysicalDeviceFormatProperties = nullptr;
+
     PFN_vkCreateDevice vkCreateDevice = nullptr;
     PFN_vkDestroyDevice vkDestroyDevice = nullptr;
 
@@ -364,6 +369,9 @@ int main()
 
     driver.vkEnumerateDeviceExtensionProperties = (PFN_vkEnumerateDeviceExtensionProperties)driver.vkGetInstanceProcAddr(vk_instance, "vkEnumerateDeviceExtensionProperties");
     assert(driver.vkEnumerateDeviceExtensionProperties && "vkEnumerateDeviceExtensionProperties");
+
+    driver.vkGetPhysicalDeviceFormatProperties = (PFN_vkGetPhysicalDeviceFormatProperties)driver.vkGetInstanceProcAddr(vk_instance, "vkGetPhysicalDeviceFormatProperties");
+    assert(driver.vkGetPhysicalDeviceFormatProperties && "vkGetPhysicalDeviceFormatProperties");
 
     driver.vkCreateDevice = (PFN_vkCreateDevice)driver.vkGetInstanceProcAddr(vk_instance, "vkCreateDevice");
     assert(driver.vkCreateDevice && "vkCreateDevice");
@@ -775,19 +783,31 @@ int main()
             }
         }
 
-        uint32_t surface_format_count = 0;
-        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, nullptr);
-        std::vector<VkSurfaceFormatKHR> surface_formats(surface_format_count);
-        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, surface_formats.data());
-        bool is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE = false;
-        for (auto &surface_format : surface_formats)
+        VkFormat target_swapchain_format = VkFormat::VK_FORMAT_UNDEFINED;
+        VkColorSpaceKHR target_swapchain_color_space = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
         {
-            if (surface_format.format == VkFormat::VK_FORMAT_B8G8R8A8_SRGB && surface_format.colorSpace == VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            uint32_t surface_format_count = 0;
+            driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, nullptr);
+            std::vector<VkSurfaceFormatKHR> surface_formats(surface_format_count);
+            driver.vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical_device, vk_surface_khr, &surface_format_count, surface_formats.data());
+            for (auto &surface_format : surface_formats)
             {
-                is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE = true;
-                break;
+                VkFormatProperties vk_format_properties = {};
+                driver.vkGetPhysicalDeviceFormatProperties(vk_physical_device, surface_format.format, &vk_format_properties);
+                if ((vk_format_properties.optimalTilingFeatures & VkFormatFeatureFlagBits::VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VkFormatFeatureFlagBits::VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT && surface_format.colorSpace == VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+                {
+                    target_swapchain_format = surface_format.format;
+                    break;
+                }
             }
         }
+
+        if (target_swapchain_format == VkFormat::VK_FORMAT_UNDEFINED)
+        {
+            throw std::runtime_error("Can not find a appropriate format for swapchain as color attachment!");
+        }
+
+        std::cout << "swapchain use " << to_string(target_swapchain_format) << " format" << std::endl;
 
         VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
         vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -795,8 +815,8 @@ int main()
         vk_swapchain_create_info_khr.flags = 0;
         vk_swapchain_create_info_khr.surface = vk_surface_khr;
         vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
-        vk_swapchain_create_info_khr.imageFormat = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
-        vk_swapchain_create_info_khr.imageColorSpace = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR : surface_formats[0].colorSpace;
+        vk_swapchain_create_info_khr.imageFormat = target_swapchain_format;
+        vk_swapchain_create_info_khr.imageColorSpace = target_swapchain_color_space;
         vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
         vk_swapchain_create_info_khr.imageArrayLayers = 1;
         vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -834,7 +854,7 @@ int main()
             vk_image_view_create_info.flags = 0;
             vk_image_view_create_info.image = swapchain_images[swapchain_image_view_index];
             vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
-            vk_image_view_create_info.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
+            vk_image_view_create_info.format = target_swapchain_format;
             vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
             vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
             vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
@@ -953,7 +973,7 @@ int main()
         VkAttachmentDescription color_attachment_description = {};
         {
             color_attachment_description.flags = 0;
-            color_attachment_description.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
+            color_attachment_description.format = target_swapchain_format;
             color_attachment_description.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
             color_attachment_description.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
             color_attachment_description.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
@@ -1266,8 +1286,8 @@ int main()
                     vk_swapchain_create_info_khr.flags = 0;
                     vk_swapchain_create_info_khr.surface = vk_surface_khr;
                     vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
-                    vk_swapchain_create_info_khr.imageFormat = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
-                    vk_swapchain_create_info_khr.imageColorSpace = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR : surface_formats[0].colorSpace;
+                    vk_swapchain_create_info_khr.imageFormat = target_swapchain_format;
+                    vk_swapchain_create_info_khr.imageColorSpace = target_swapchain_color_space;
                     vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
                     vk_swapchain_create_info_khr.imageArrayLayers = 1;
                     vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -1308,7 +1328,7 @@ int main()
                         vk_image_view_create_info.flags = 0;
                         vk_image_view_create_info.image = swapchain_images[swapchain_image_view_index];
                         vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
-                        vk_image_view_create_info.format = is_surface_support_B8G8R8A8_SRGB_and_NONLINEAR_SPACE ? VkFormat::VK_FORMAT_B8G8R8A8_SRGB : surface_formats[0].format;
+                        vk_image_view_create_info.format = target_swapchain_format;
                         vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
                         vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
                         vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
