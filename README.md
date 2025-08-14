@@ -8,6 +8,20 @@
 
 将会输出 `VulkanTriangle.exe` 可执行程序。
 
+> [!NOTE]
+> `Linux` 需要配置如下依赖库：
+>
+> ```cxx
+> sudo apt install libx11-dev       //cmake
+> sudo apt install libxrandr-dev    //glfw 
+> sudo apt install libxinerama-dev  //glfw 
+> sudo apt install libxcursor-dev   //glfw 
+> sudo apt install libxi-dev        //glfw 
+> sudo apt install libwayland-dev   //build 
+> sudo apt install build-essential  //build
+> sudo apt install freeglut3-dev    //build 
+>  ```
+
 ## 作者
 
 [FuXii](https://github.com/FuXiii)
@@ -19,6 +33,12 @@
 * [Vulkan 入门精要](https://fuxiii.github.io/Essentials.of.Vulkan/index.html)
 
 ### 日志
+
+> **2025/8/14**
+>
+> >移除 `CMakeLists.txt` 中的 `target_link_directories` 的使用。冗余。
+> >
+> >`README.md` 增加 `Linux` 环境下的配置说明。
 
 > **2024/11/25**
 >

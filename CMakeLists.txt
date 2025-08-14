@@ -17,9 +17,9 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC ./thirdparty/glm/
     )
 
-target_link_directories(${PROJECT_NAME} 
-PUBLIC /thirdparty/glfw/src/
-)
+#target_link_directories(${PROJECT_NAME} 
+#PUBLIC /thirdparty/glfw/src/
+#)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC 
 glfw
