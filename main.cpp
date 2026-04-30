@@ -1276,7 +1276,7 @@ int main()
             VkResult next_image_require_result = driver.vkAcquireNextImageKHR(vk_device, vk_swapchain_khr, UINT64_MAX - 1, VK_NULL_HANDLE, require_next_image_fence, &next_image_index);
 
             // if (next_image_require_result != VkResult::VK_SUCCESS)
-            if (next_image_require_result == VkResult::VK_ERROR_OUT_OF_DATE_KHR)
+            if (next_image_require_result == VkResult::VK_ERROR_OUT_OF_DATE_KHR || next_image_require_result == VkResult::VK_SUBOPTIMAL_KHR)
             {
                 driver.vkDestroyFence(vk_device, require_next_image_fence, nullptr);
 

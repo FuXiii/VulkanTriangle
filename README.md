@@ -39,6 +39,8 @@
 > >增加对 `Push Constants` 使用，使得三角形大小随时间变化。
 > >
 > >更新 `triangle.vert` 使用 `Push Constants` 改变三角形大小。
+> 
+> >适配 `Linux` 窗口大小发生变化。
 
 > **2025/8/14**
 >
