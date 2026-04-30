@@ -34,6 +34,12 @@
 
 ### 日志
 
+> **2026/4/30**
+>
+> >增加对 `Push Constants` 使用，使得三角形大小随时间变化。
+> >
+> >更新 `triangle.vert` 使用 `Push Constants` 改变三角形大小。
+
 > **2025/8/14**
 >
 > >移除 `CMakeLists.txt` 中的 `target_link_directories` 的使用。冗余。
