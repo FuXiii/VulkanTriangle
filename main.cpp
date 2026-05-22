@@ -4,6 +4,8 @@
 #define USE_LINUX_PLATFORM
 #elif defined(__APPLE__)
 #define USE_APPLE_PLATFORM
+#elif defined(OHOS)
+#define USE_HARMONY_OS
 #endif
 
 #if defined(USE_WINDOWS_PLATFORM)
@@ -11,6 +13,7 @@
 #elif defined(USE_LINUX_PLATFORM) || defined(USE_APPLE_PLATFORM)
 #include <dlfcn.h>
 #include <stdlib.h>
+#elif defined(USE_HARMONY_OS)
 #endif
 
 #include <vulkan/vulkan.h>
@@ -1297,7 +1300,7 @@ int main()
 
                     driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical_device, vk_surface_khr, &vk_surface_capabilities_khr);
 
-                    //std::cout << "(width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
+                    // std::cout << "(width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
                     if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
                     {
                         continue;

@@ -1,0 +1,6 @@
+{
+  "name": "libVulkanTriangle.so",
+  "types": "./index.d.ts",
+  "version": "1.0.0",
+  "description": "Use Vulkan draw triangle"
+}
