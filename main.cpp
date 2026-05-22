@@ -1297,6 +1297,12 @@ int main()
 
                     driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical_device, vk_surface_khr, &vk_surface_capabilities_khr);
 
+                    //std::cout << "(width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
+                    if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
+                    {
+                        continue;
+                    }
+
                     VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
                     vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
                     vk_swapchain_create_info_khr.pNext = nullptr;
