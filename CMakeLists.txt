@@ -18,7 +18,8 @@ if(OHOS)
     set(OHOS_VERSION 6)
   endif()
 
-  add_library(${PROJECT_NAME} SHARED napi_init.cpp)
+  #add_library(${PROJECT_NAME} SHARED napi_init_10.cpp)
+  add_library(${PROJECT_NAME} SHARED napi_init_19.cpp)
   target_compile_definitions(${PROJECT_NAME} PUBLIC OHOS)
 
   if(${OHOS_VERSION} EQUAL 4)
@@ -34,7 +35,8 @@ if(OHOS)
     PUBLIC hilog_ndk.z
     PUBLIC ace_ndk.z
     PUBLIC native_window
-    PUBLIC native_vsync
+    PUBLIC native_vsync#10
+    PUBLIC native_display_soloist#19
   )
 else()
   add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)

@@ -1,12 +1,13 @@
 #include <napi/native_api.h>
+#include <string>
 #include <hilog/log.h>
 #include <ace/xcomponent/native_interface_xcomponent.h>
 #include <native_window/external_window.h>
 #include <native_vsync/native_vsync.h>
+#include <unordered_map>
 
 #define LOG_PRINT_DOMAIN 0x1
 #define VSYNC_NAME "VulkanTriangleVSync"
-
 OH_NativeVSync *NATIVE_VSYNC = nullptr;
 
 void OnVsync(long long timestamp, void *data)
@@ -20,7 +21,6 @@ void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
 {
     OHNativeWindow *nativeWindow = static_cast<OHNativeWindow *>(window);
 
-    // TODO: Init Vulkan
     // TODO: Create VkSurface
 
     {
@@ -50,7 +50,6 @@ void OnSurfaceDestroyed(OH_NativeXComponent *component, void *window)
     }
 
     // TODO: Destroy VkSurface
-    // TODO: Destroy Vulkan
 }
 
 void DispatchTouchEvent(OH_NativeXComponent *component, void *window)
@@ -58,10 +57,49 @@ void DispatchTouchEvent(OH_NativeXComponent *component, void *window)
     OHNativeWindow *nativeWindow = static_cast<OHNativeWindow *>(window);
 }
 
+void OnNativeXComponentInit(OH_NativeXComponent *nativeXComponent)
+{
+    uint64_t id_size = OH_XCOMPONENT_ID_LEN_MAX + 1;
+    char id[OH_XCOMPONENT_ID_LEN_MAX + 1] = {'\0'};
+
+    if (OH_NativeXComponent_GetXComponentId(nativeXComponent, id, &id_size) != OH_NATIVEXCOMPONENT_RESULT_SUCCESS)
+    {
+        OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "Init", "OH_NativeXComponent_GetXComponentId(nativeXComponent, id, id_size) != OH_NATIVEXCOMPONENT_RESULT_SUCCESS");
+        return;
+    }
+
+    OH_NativeXComponent_Callback callback;
+    callback.OnSurfaceCreated = OnSurfaceCreated;     // surface创建成功后触发，开发者可以从中获取native window的句柄
+    callback.OnSurfaceChanged = OnSurfaceChanged;     // surface发生变化后触发，开发者可以从中获取native window的句柄以及XComponent的变更信息
+    callback.OnSurfaceDestroyed = OnSurfaceDestroyed; // surface销毁时触发，开发者可以在此释放资源
+    callback.DispatchTouchEvent = DispatchTouchEvent; // XComponent的touch事件回调接口，开发者可以从中获得此次touch事件的信息
+
+    OH_NativeXComponent_RegisterCallback(nativeXComponent, &callback);
+}
+
+void OnVulkanInit()
+{
+    // TODO: Init Vulkan
+}
+
 extern "C"
 {
     static napi_value Init(napi_env env, napi_value exports)
     {
+        static bool is_napi_define_properties = false;
+        if (!is_napi_define_properties)
+        {
+            napi_property_descriptor desc[] = {
+                //{"myAdd", nullptr, MyAdd, nullptr, nullptr, nullptr, napi_default, nullptr}
+            };
+            napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
+
+            OnVulkanInit();
+
+            is_napi_define_properties = true;
+            return exports;
+        }
+
         {
             napi_status status;
             napi_value xcomponent_object = nullptr;
@@ -80,19 +118,11 @@ extern "C"
                 return nullptr;
             }
 
-            OH_NativeXComponent_Callback callback;
-            callback.OnSurfaceCreated = OnSurfaceCreated;     // surface创建成功后触发，开发者可以从中获取native window的句柄
-            callback.OnSurfaceChanged = OnSurfaceChanged;     // surface发生变化后触发，开发者可以从中获取native window的句柄以及XComponent的变更信息
-            callback.OnSurfaceDestroyed = OnSurfaceDestroyed; // surface销毁时触发，开发者可以在此释放资源
-            callback.DispatchTouchEvent = DispatchTouchEvent; // XComponent的touch事件回调接口，开发者可以从中获得此次touch事件的信息
-
-            OH_NativeXComponent_RegisterCallback(native_xcomponent, &callback);
+            {
+                OnNativeXComponentInit(native_xcomponent);
+            }
         }
 
-        napi_property_descriptor desc[] = {
-            //{"myAdd", nullptr, MyAdd, nullptr, nullptr, nullptr, napi_default, nullptr}
-        };
-        napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
         return exports;
     }
 }

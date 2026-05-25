@@ -1,0 +1,7 @@
+DevEco 6.0.2 最低支持 SDK 5.0.0(API 12)
+
+OH_ArkUI_XComponent_SetExpectedFrameRateRange() 为 API 20 的接口
+OH_ArkUI_XComponent_RegisterOnFrameCallback() 为 API 20 的接口
+OH_ArkUI_XComponent_UnregisterOnFrameCallback() 为 API 20 的接口
+OH_ArkUI_SurfaceCallback_SetSurfaceShowEvent() 为 API 20 的接口
+OH_ArkUI_SurfaceCallback_SetSurfaceHideEvent() 为 API 20 的接口
