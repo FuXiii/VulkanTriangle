@@ -1195,6 +1195,9 @@ int main()
             throw std::runtime_error("Can not create rendering pipeline!");
         }
 
+        driver.vkDestroyShaderModule(vk_device, my_fragment_shader_module, nullptr);
+        driver.vkDestroyShaderModule(vk_device, my_vertex_shader_module, nullptr);
+
         // Descriptor Set
 
         // FrameBuffer
@@ -1519,8 +1522,8 @@ int main()
         driver.vkDestroyRenderPass(vk_device, vk_render_pass, nullptr);
         driver.vkDestroyDescriptorPool(vk_device, vk_descriptor_pool, nullptr);
 
-        driver.vkDestroyShaderModule(vk_device, my_fragment_shader_module, nullptr);
-        driver.vkDestroyShaderModule(vk_device, my_vertex_shader_module, nullptr);
+        // driver.vkDestroyShaderModule(vk_device, my_fragment_shader_module, nullptr);
+        // driver.vkDestroyShaderModule(vk_device, my_vertex_shader_module, nullptr);
 
         for (VkImageView &vk_image_view_item : swapchain_image_views)
         {

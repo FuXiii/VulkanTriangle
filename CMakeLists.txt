@@ -40,6 +40,7 @@ if(OHOS)
   )
 else()
   add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)
+  #add_executable(${PROJECT_NAME} ./VulkanTriangle.cpp VkString.cpp)
   add_subdirectory(./thirdparty)
   add_dependencies(${PROJECT_NAME} glfw)
 
@@ -49,6 +50,7 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME}
+    PUBLIC ./
     PUBLIC ./include
     PUBLIC ./thirdparty/glm/
 )

@@ -11,7 +11,10 @@
 #include <string>
 #include <unordered_map>
 
-#define LOG_PRINT_DOMAIN 0x1
+void MyLog(const std::string &str)
+{
+    OH_LOG_Print(LOG_APP, LOG_INFO, 0x1, "Log", "%s", str.c_str());
+}
 
 ArkUI_NativeNodeAPI_1 *NODE_API_1 = reinterpret_cast<ArkUI_NativeNodeAPI_1 *>(OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_NODE, "ArkUI_NativeNodeAPI_1"));
 
@@ -28,47 +31,55 @@ std::unordered_map<std::string, SurfaceData *> SURFACE_DATA_MAP;
 
 void OnDisplaySoloistFrameCallback(long long timestamp, long long targetTimestamp, void *data)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnDisplaySoloistFrameCallback", "on display soloist frame callback");
+    MyLog("OnDisplaySoloistFrameCallback");
 }
 
 void OnSurfaceCreated(OH_ArkUI_SurfaceHolder *holder)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnSurfaceCreated", "on surface created");
+    MyLog("OnSurfaceCreated");
 
     SurfaceData *surface_data = (SurfaceData *)OH_ArkUI_SurfaceHolder_GetUserData(holder);
     if (surface_data != nullptr)
     {
         OH_DisplaySoloist_Start(surface_data->displaySoloist, OnDisplaySoloistFrameCallback, nullptr);
+        MyLog("OH_DisplaySoloist_Start");
     }
 }
 
 void OnSurfaceChanged(OH_ArkUI_SurfaceHolder *holder, uint64_t width, uint64_t height)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnSurfaceChanged", "on surface changed");
+    MyLog("OnSurfaceChanged");
 }
 
 void OnSurfaceDestroyed(OH_ArkUI_SurfaceHolder *holder)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnSurfaceDestroyed", "on surface destroyed");
+    MyLog("OnSurfaceDestroyed");
 
     SurfaceData *surface_data = (SurfaceData *)OH_ArkUI_SurfaceHolder_GetUserData(holder);
     if (surface_data != nullptr)
     {
         OH_DisplaySoloist_Stop(surface_data->displaySoloist);
+        MyLog("OH_DisplaySoloist_Stop");
+
         OH_ArkUI_SurfaceHolder_RemoveSurfaceCallback(surface_data->holder, surface_data->callback);
+        MyLog("OH_ArkUI_SurfaceHolder_RemoveSurfaceCallback");
+
         OH_ArkUI_SurfaceCallback_Dispose(surface_data->callback);
+        MyLog("OH_ArkUI_SurfaceCallback_Dispose");
+
         OH_ArkUI_SurfaceHolder_Dispose(surface_data->holder); // 销毁surfaceHolder
+        MyLog("OH_ArkUI_SurfaceHolder_Dispose");
     }
 }
 
 void OnSurfaceShow(OH_ArkUI_SurfaceHolder *holder)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnSurfaceShow", "on surface show");
+    MyLog("OnSurfaceShow");
 }
 
 void OnSurfaceHide(OH_ArkUI_SurfaceHolder *holder)
 {
-    OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_PRINT_DOMAIN, "OnSurfaceHide", "on surface hide");
+    MyLog("OnSurfaceHide");
 }
 
 /*
@@ -77,6 +88,8 @@ ArkUI侧：
 */
 napi_value BindNode(napi_env env, napi_callback_info info)
 {
+    MyLog("BindNode");
+
     size_t argc = 2;
     napi_value args[2] = {nullptr};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -88,8 +101,10 @@ napi_value BindNode(napi_env env, napi_callback_info info)
 
     ArkUI_NodeHandle handle;
     OH_ArkUI_GetNodeHandleFromNapiValue(env, args[1], &handle);
+    MyLog("OH_ArkUI_GetNodeHandleFromNapiValue");
 
     OH_ArkUI_SurfaceHolder *holder = OH_ArkUI_SurfaceHolder_Create(handle);
+    MyLog("OH_ArkUI_SurfaceHolder_Create");
 
     auto surface_callback = OH_ArkUI_SurfaceCallback_Create(); // 创建SurfaceCallback
     OH_ArkUI_SurfaceCallback_SetSurfaceCreatedEvent(surface_callback, OnSurfaceCreated);
@@ -98,9 +113,13 @@ napi_value BindNode(napi_env env, napi_callback_info info)
     OH_ArkUI_SurfaceCallback_SetSurfaceShowEvent(surface_callback, OnSurfaceShow);
     OH_ArkUI_SurfaceCallback_SetSurfaceHideEvent(surface_callback, OnSurfaceHide);
 
+    MyLog("OH_ArkUI_SurfaceCallback_Create");
+
     OH_ArkUI_SurfaceHolder_AddSurfaceCallback(holder, surface_callback);
+    MyLog("OH_ArkUI_SurfaceHolder_AddSurfaceCallback");
 
     OH_DisplaySoloist *display_soloist = OH_DisplaySoloist_Create(false);
+    MyLog("OH_DisplaySoloist_Create");
 
     DisplaySoloist_ExpectedRateRange range;
     range.min = 30;
@@ -108,6 +127,7 @@ napi_value BindNode(napi_env env, napi_callback_info info)
     range.expected = 60;
 
     OH_DisplaySoloist_SetExpectedFrameRateRange(display_soloist, &range);
+    MyLog("OH_DisplaySoloist_SetExpectedFrameRateRange");
 
     SurfaceData *surface_data = new SurfaceData();
     surface_data->id = id_str;
@@ -117,8 +137,10 @@ napi_value BindNode(napi_env env, napi_callback_info info)
     surface_data->displaySoloist = display_soloist;
 
     SURFACE_DATA_MAP[id_str] = surface_data;
+    MyLog("SURFACE_DATA_MAP[id_str] = surface_data");
 
     OH_ArkUI_SurfaceHolder_SetUserData(holder, surface_data);
+    MyLog("OH_ArkUI_SurfaceHolder_SetUserData");
 
     return nullptr;
 }
@@ -140,10 +162,16 @@ napi_value UnbindNode(napi_env env, napi_callback_info info)
         auto surface_data = find_result->second;
 
         OH_DisplaySoloist_Destroy(surface_data->displaySoloist);
+        MyLog("OH_DisplaySoloist_Destroy");
+
         NODE_API_1->disposeNode(surface_data->handle);
+        MyLog("NODE_API_1->disposeNode(surface_data->handle)");
 
         delete surface_data;
+        MyLog("delete surface_data");
+
         SURFACE_DATA_MAP.erase(find_result);
+        MyLog("SURFACE_DATA_MAP.erase(find_result)");
     }
 
     return nullptr;
@@ -161,7 +189,12 @@ extern "C"
         static bool is_napi_define_properties = false;
         if (!is_napi_define_properties)
         {
-            napi_property_descriptor desc[] = {{"BindNode", nullptr, BindNode, nullptr, nullptr, nullptr, napi_default, nullptr}, {"UnbindNode", nullptr, UnbindNode, nullptr, nullptr, nullptr, napi_default, nullptr}};
+            // clang-format off
+            napi_property_descriptor desc[] = {
+                {"BindNode", nullptr, BindNode, nullptr, nullptr, nullptr, napi_default, nullptr}, 
+                {"UnbindNode", nullptr, UnbindNode, nullptr, nullptr, nullptr, napi_default, nullptr}
+            };
+            // clang-format on
             napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
 
             OnVulkanInit();
