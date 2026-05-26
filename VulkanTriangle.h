@@ -175,8 +175,8 @@ class VulkanTriangle
 
     std::vector<VkFramebuffer> frameBuffers;
 
-    // uint32_t surfaceWidth = 0;
-    // uint32_t surfaceHeight = 0;
+    uint32_t surfaceWidth = 0;
+    uint32_t surfaceHeight = 0;
 
     VkFormat targetSwapchainFormat = VkFormat::VK_FORMAT_UNDEFINED;
     VkColorSpaceKHR targetSwapchainColorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;

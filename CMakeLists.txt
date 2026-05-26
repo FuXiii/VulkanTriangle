@@ -39,8 +39,8 @@ if(OHOS)
     PUBLIC native_display_soloist#19
   )
 else()
-  add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)
-  #add_executable(${PROJECT_NAME} ./VulkanTriangle.cpp VkString.cpp)
+  #add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)
+  add_executable(${PROJECT_NAME} ./VulkanTriangle.h ./VulkanTriangle.cpp VkString.cpp)
   add_subdirectory(./thirdparty)
   add_dependencies(${PROJECT_NAME} glfw)
 

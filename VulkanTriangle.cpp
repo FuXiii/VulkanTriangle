@@ -644,6 +644,9 @@ void VulkanTriangle::CreateSurface(void *window)
     VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
     driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
 
+    this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
+    this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
+
     driver.vkGetPhysicalDeviceSurfacePresentModesKHR = (PFN_vkGetPhysicalDeviceSurfacePresentModesKHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceSurfacePresentModesKHR");
     assert(driver.vkGetPhysicalDeviceSurfacePresentModesKHR && "vkGetPhysicalDeviceSurfacePresentModesKHR");
 
@@ -1098,8 +1101,8 @@ void VulkanTriangle::Draw(float time)
 
     float scale = (std::sin(time * 0.5) + 1) * 0.5; //[0, 1]
 
-    VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
-    driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+    // VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
+    // driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
 
     uint32_t next_image_index = UINT32_MAX;
 
@@ -1117,9 +1120,10 @@ void VulkanTriangle::Draw(float time)
     {
         driver.vkDestroyFence(this->device, require_next_image_fence, nullptr);
 
+        VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
         driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
 
-        std::cout << "new (width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
+        //std::cout << "new (width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
         if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
         {
             // TODO: not drawing
@@ -1140,7 +1144,6 @@ void VulkanTriangle::Draw(float time)
             }
             this->swapchainImageViews.clear();
             this->swapchainImages.clear();
-            std::cout << "new (width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
 
             VkSwapchainKHR old_swapchain = this->swapchain;
             VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
@@ -1168,6 +1171,10 @@ void VulkanTriangle::Draw(float time)
             if (new_create_swapchain_result == VkResult::VK_SUCCESS)
             {
                 driver.vkDestroySwapchainKHR(this->device, vk_swapchain_create_info_khr.oldSwapchain, nullptr);
+                // driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+
+                this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
+                this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
             }
 
             uint32_t swapchain_image_count = 0;
@@ -1180,7 +1187,6 @@ void VulkanTriangle::Draw(float time)
                 throw std::runtime_error("Can not get swapchain images!");
             }
 
-            std::cout << "swapchain_image_count = " << swapchain_image_count << std::endl;
             this->swapchainImageViews.resize(swapchain_image_count);
             for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchain_image_count; swapchain_image_view_index++)
             {
@@ -1201,21 +1207,21 @@ void VulkanTriangle::Draw(float time)
                 vk_image_view_create_info.subresourceRange.baseArrayLayer = 0;
                 vk_image_view_create_info.subresourceRange.layerCount = 1;
 
-                driver.vkCreateImageView(this->device, &vk_image_view_create_info, nullptr, &swapchainImageViews[swapchain_image_view_index]);
+                driver.vkCreateImageView(this->device, &vk_image_view_create_info, nullptr, &this->swapchainImageViews[swapchain_image_view_index]);
             }
 
             for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchainImageViews.size(); swapchain_image_view_index++)
             {
-                std::vector<VkImageView> frame_buffer;
-                frame_buffer.push_back(swapchainImageViews[swapchain_image_view_index]);
+                std::vector<VkImageView> frame_buffers;
+                frame_buffers.push_back(swapchainImageViews[swapchain_image_view_index]);
 
                 VkFramebufferCreateInfo vk_frame_buffer_create_info = {};
                 vk_frame_buffer_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
                 vk_frame_buffer_create_info.pNext = nullptr;
                 vk_frame_buffer_create_info.flags = 0;
                 vk_frame_buffer_create_info.renderPass = this->renderPass;
-                vk_frame_buffer_create_info.attachmentCount = frame_buffer.size();
-                vk_frame_buffer_create_info.pAttachments = frame_buffer.data();
+                vk_frame_buffer_create_info.attachmentCount = frame_buffers.size();
+                vk_frame_buffer_create_info.pAttachments = frame_buffers.data();
                 vk_frame_buffer_create_info.width = vk_surface_capabilities_khr.currentExtent.width;
                 vk_frame_buffer_create_info.height = vk_surface_capabilities_khr.currentExtent.height;
                 vk_frame_buffer_create_info.layers = 1;
@@ -1230,10 +1236,9 @@ void VulkanTriangle::Draw(float time)
                 this->frameBuffers.push_back(vk_frame_buffer);
             }
         }
-
         return;
     }
-    else
+
     {
         driver.vkWaitForFences(this->device, 1, &require_next_image_fence, VK_TRUE, UINT64_MAX);
         driver.vkDestroyFence(this->device, require_next_image_fence, nullptr);
@@ -1278,8 +1283,8 @@ void VulkanTriangle::Draw(float time)
     vk_render_pass_begin_info.framebuffer = this->frameBuffers[next_image_index];
     vk_render_pass_begin_info.renderArea.offset.x = 0;
     vk_render_pass_begin_info.renderArea.offset.y = 0;
-    vk_render_pass_begin_info.renderArea.extent.width = vk_surface_capabilities_khr.currentExtent.width;
-    vk_render_pass_begin_info.renderArea.extent.height = vk_surface_capabilities_khr.currentExtent.height;
+    vk_render_pass_begin_info.renderArea.extent.width = this->surfaceWidth;
+    vk_render_pass_begin_info.renderArea.extent.height = this->surfaceHeight;
     // vk_render_pass_begin_info.renderArea.extent.width = 512;
     // vk_render_pass_begin_info.renderArea.extent.height = 512;
     vk_render_pass_begin_info.clearValueCount = vk_clear_values.size();
@@ -1288,16 +1293,16 @@ void VulkanTriangle::Draw(float time)
     VkViewport vk_viewport = {};
     vk_viewport.x = 0;
     vk_viewport.y = 0;
-    vk_viewport.width = vk_surface_capabilities_khr.currentExtent.width;
-    vk_viewport.height = vk_surface_capabilities_khr.currentExtent.height;
+    vk_viewport.width = this->surfaceWidth;
+    vk_viewport.height = this->surfaceHeight;
     vk_viewport.minDepth = 0;
     vk_viewport.maxDepth = 1;
 
     VkRect2D scissor = {};
     scissor.offset.x = 0;
     scissor.offset.y = 0;
-    scissor.extent.width = vk_surface_capabilities_khr.currentExtent.width;
-    scissor.extent.height = vk_surface_capabilities_khr.currentExtent.height;
+    scissor.extent.width = this->surfaceWidth;
+    scissor.extent.height = this->surfaceHeight;
 
     driver.vkCmdBeginRenderPass(vk_command_buffer, &vk_render_pass_begin_info, VkSubpassContents::VK_SUBPASS_CONTENTS_INLINE);
     driver.vkCmdBindPipeline(vk_command_buffer, VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS, this->pipeline);
@@ -1347,11 +1352,7 @@ void VulkanTriangle::Draw(float time)
     vk_present_info_khr.pResults = nullptr;
 
     // TODO: load vkQueuePresentKHR(...) by TVulkanLoader
-    VkResult result = driver.vkQueuePresentKHR(this->queue, &vk_present_info_khr);
-    if (result != VkResult::VK_SUCCESS)
-    {
-        std::cout << "vkQueuePresentKHR = " << result << std::endl;
-    }
+    driver.vkQueuePresentKHR(this->queue, &vk_present_info_khr);
     // Vulkan loop
 }
 

@@ -1,3 +1,4 @@
 F:/Huawei/command-line-tools/sdk/default/openharmony/native/build-tools/cmake/bin/cmake -G"Ninja" -D OHOS_STL=c++_shared -D OHOS_ARCH=arm64-v8a -D OHOS_PLATFORM=OHOS -D CMAKE_TOOLCHAIN_FILE=F:/Huawei/command-line-tools/sdk/default/openharmony/native/build/cmake/ohos.toolchain.cmake ..
+F:/Huawei/commandline-tools-windows-x64-6.1.0.830/command-line-tools/sdk/default/openharmony/native/build-tools/cmake/bin/cmake -G"Ninja" -D OHOS_STL=c++_shared -D OHOS_ARCH=arm64-v8a -D OHOS_PLATFORM=OHOS -D CMAKE_TOOLCHAIN_FILE=F:/Huawei/commandline-tools-windows-x64-6.1.0.830/command-line-tools/sdk/default/openharmony/native/build/cmake/ohos.toolchain.cmake ..
 
 cmake --build .
