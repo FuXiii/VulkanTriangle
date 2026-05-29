@@ -6,6 +6,10 @@
 #include <native_vsync/native_vsync.h>
 #include <unordered_map>
 
+#include <VulkanTriangle.h>
+
+VulkanTriangle VULKAN_TRIANGLE;
+
 #define LOG_PRINT_DOMAIN 0x1
 #define VSYNC_NAME "VulkanTriangleVSync"
 OH_NativeVSync *NATIVE_VSYNC = nullptr;
@@ -14,13 +18,14 @@ void OnVsync(long long timestamp, void *data)
 {
     OH_LOG_Print(LOG_APP, LOG_DEBUG, LOG_PRINT_DOMAIN, "VulkanTriangle", "OnVsync %{public}lld.", timestamp);
     // TODO: Rendering Loop
+    VULKAN_TRIANGLE.Draw(timestamp * 0.001);
     OH_NativeVSync_RequestFrame(NATIVE_VSYNC, &OnVsync, nullptr);
 }
 
 void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
 {
-    OHNativeWindow *nativeWindow = static_cast<OHNativeWindow *>(window);
-
+    OHNativeWindow *native_window = static_cast<OHNativeWindow *>(window);
+    VULKAN_TRIANGLE.CreateSurface(native_window);
     // TODO: Create VkSurface
 
     {

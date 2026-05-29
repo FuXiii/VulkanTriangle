@@ -41,6 +41,8 @@
 > >更新 `Vulkan` 头文件版本到 `1.4.352` 。
 >
 > >更新 `VulkanTriangle.h/cpp` 适配 `Open/HarmonyOS` 。
+>
+> >更新 `napi_init_10/19/20.cpp` 适配 `VulkanTriangle` 。
 
 > **2026/5/26**
 >

@@ -10,6 +10,10 @@
 #include <string>
 #include <unordered_map>
 
+#include <VulkanTriangle.h>
+
+VulkanTriangle VULKAN_TRIANGLE;
+
 void MyLog(const std::string &str)
 {
     OH_LOG_Print(LOG_APP, LOG_INFO, 0x1, "Log", "%s", str.c_str());
@@ -30,12 +34,14 @@ std::unordered_map<std::string, SurfaceData *> SURFACE_DATA_MAP;
 void OnArkUIXComponentFrameCallback(ArkUI_NodeHandle node, uint64_t timestamp, uint64_t targetTimestamp)
 {
     MyLog("OnArkUIXComponentFrameCallback");
+    VULKAN_TRIANGLE.Draw(timestamp * 0.001);
 }
 
 void OnSurfaceCreated(OH_ArkUI_SurfaceHolder *holder)
 {
     MyLog("OnSurfaceCreated");
-    auto window = OH_ArkUI_XComponent_GetNativeWindow(holder);
+    auto native_window = OH_ArkUI_XComponent_GetNativeWindow(holder);
+    VULKAN_TRIANGLE.CreateSurface(native_window);
 
     SurfaceData *surface_data = (SurfaceData *)OH_ArkUI_SurfaceHolder_GetUserData(holder);
 }
