@@ -188,7 +188,7 @@ class VulkanTriangle
     ~VulkanTriangle();
 
     void CreateSurface(void *window);
-    void ResizeSurface();
+    //void ResizeSurface();
 
     void Draw(float time);
 };

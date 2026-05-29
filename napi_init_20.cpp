@@ -6,7 +6,6 @@
 
 #include <arkui/native_interface.h>
 #include <arkui/native_node.h>
-#include <native_display_soloist/native_display_soloist.h>
 
 #include <string>
 #include <unordered_map>
@@ -24,14 +23,13 @@ struct SurfaceData
     ArkUI_NodeHandle handle;
     OH_ArkUI_SurfaceHolder *holder = nullptr;
     OH_ArkUI_SurfaceCallback *callback = nullptr;
-    OH_DisplaySoloist *displaySoloist = nullptr;
 };
 
 std::unordered_map<std::string, SurfaceData *> SURFACE_DATA_MAP;
 
-void OnDisplaySoloistFrameCallback(long long timestamp, long long targetTimestamp, void *data)
+void OnArkUIXComponentFrameCallback(ArkUI_NodeHandle node, uint64_t timestamp, uint64_t targetTimestamp)
 {
-    MyLog("OnDisplaySoloistFrameCallback");
+    MyLog("OnArkUIXComponentFrameCallback");
 }
 
 void OnSurfaceCreated(OH_ArkUI_SurfaceHolder *holder)
@@ -40,11 +38,6 @@ void OnSurfaceCreated(OH_ArkUI_SurfaceHolder *holder)
     auto window = OH_ArkUI_XComponent_GetNativeWindow(holder);
 
     SurfaceData *surface_data = (SurfaceData *)OH_ArkUI_SurfaceHolder_GetUserData(holder);
-    if (surface_data != nullptr)
-    {
-        OH_DisplaySoloist_Start(surface_data->displaySoloist, OnDisplaySoloistFrameCallback, nullptr);
-        MyLog("OH_DisplaySoloist_Start");
-    }
 }
 
 void OnSurfaceChanged(OH_ArkUI_SurfaceHolder *holder, uint64_t width, uint64_t height)
@@ -59,8 +52,8 @@ void OnSurfaceDestroyed(OH_ArkUI_SurfaceHolder *holder)
     SurfaceData *surface_data = (SurfaceData *)OH_ArkUI_SurfaceHolder_GetUserData(holder);
     if (surface_data != nullptr)
     {
-        OH_DisplaySoloist_Stop(surface_data->displaySoloist);
-        MyLog("OH_DisplaySoloist_Stop");
+        OH_ArkUI_XComponent_UnregisterOnFrameCallback(surface_data->handle);
+        MyLog("OH_ArkUI_XComponent_UnregisterOnFrameCallback");
 
         OH_ArkUI_SurfaceHolder_RemoveSurfaceCallback(surface_data->holder, surface_data->callback);
         MyLog("OH_ArkUI_SurfaceHolder_RemoveSurfaceCallback");
@@ -114,28 +107,26 @@ napi_value BindNode(napi_env env, napi_callback_info info)
     OH_ArkUI_SurfaceCallback_SetSurfaceShowEvent(surface_callback, OnSurfaceShow);
     OH_ArkUI_SurfaceCallback_SetSurfaceHideEvent(surface_callback, OnSurfaceHide);
 
+    OH_ArkUI_XComponent_RegisterOnFrameCallback(handle, OnArkUIXComponentFrameCallback);
+
     MyLog("OH_ArkUI_SurfaceCallback_Create");
+    MyLog("OH_ArkUI_XComponent_RegisterOnFrameCallback");
 
     OH_ArkUI_SurfaceHolder_AddSurfaceCallback(holder, surface_callback);
     MyLog("OH_ArkUI_SurfaceHolder_AddSurfaceCallback");
 
-    OH_DisplaySoloist *display_soloist = OH_DisplaySoloist_Create(false);
-    MyLog("OH_DisplaySoloist_Create");
-
-    DisplaySoloist_ExpectedRateRange range;
+    OH_NativeXComponent_ExpectedRateRange range;
     range.min = 30;
     range.max = 120;
     range.expected = 60;
-
-    OH_DisplaySoloist_SetExpectedFrameRateRange(display_soloist, &range);
-    MyLog("OH_DisplaySoloist_SetExpectedFrameRateRange");
+    OH_ArkUI_XComponent_SetExpectedFrameRateRange(handle, range); // 设置期望帧率
+    MyLog("OH_ArkUI_XComponent_SetExpectedFrameRateRange");
 
     SurfaceData *surface_data = new SurfaceData();
     surface_data->id = id_str;
     surface_data->handle = handle;
     surface_data->holder = holder;
     surface_data->callback = surface_callback;
-    surface_data->displaySoloist = display_soloist;
 
     SURFACE_DATA_MAP[id_str] = surface_data;
     MyLog("SURFACE_DATA_MAP[id_str] = surface_data");
@@ -161,9 +152,6 @@ napi_value UnbindNode(napi_env env, napi_callback_info info)
     if (find_result != SURFACE_DATA_MAP.end())
     {
         auto surface_data = find_result->second;
-
-        OH_DisplaySoloist_Destroy(surface_data->displaySoloist);
-        MyLog("OH_DisplaySoloist_Destroy");
 
         NODE_API_1->disposeNode(surface_data->handle);
         MyLog("NODE_API_1->disposeNode(surface_data->handle)");
