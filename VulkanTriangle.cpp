@@ -1,5 +1,18 @@
 #include <VulkanTriangle.h>
 
+#include <stdio.h>
+void MyPrint(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+#if defined(USE_HARMONY_OS_PLATFORM)
+    OH_LOG_Print(LOG_APP, LOG_DEBUG, 0x1, "VulkanTriangle", format, args);
+#else
+    vprintf(format, args);
+#endif
+    va_end(args);
+}
+
 static const uint32_t MY_VERT_SHADER_BIN[] = {0x07230203, 0x00010000, 0x000d000b, 0x0000004d, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0008000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x00000017, 0x00000021, 0x0000003b, 0x00050048, 0x00000009, 0x00000000, 0x00000023, 0x00000000, 0x00030047, 0x00000009, 0x00000002, 0x00040047, 0x00000017, 0x0000000b, 0x0000002a, 0x00040047, 0x00000021, 0x0000001e, 0x00000000, 0x00050048, 0x00000039, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x00000039, 0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x00000039, 0x00000002, 0x0000000b, 0x00000003, 0x00050048, 0x00000039, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x00000039, 0x00000002, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x0003001e, 0x00000009, 0x00000006, 0x00040020, 0x0000000a, 0x00000009, 0x00000009, 0x0004003b, 0x0000000a, 0x0000000b, 0x00000009, 0x00040015, 0x0000000c, 0x00000020, 0x00000001, 0x0004002b, 0x0000000c, 0x0000000d, 0x00000000, 0x00040020, 0x0000000e, 0x00000009, 0x00000006, 0x00040017, 0x00000011, 0x00000006, 0x00000002, 0x0004002b, 0x00000006, 0x00000014, 0x00000000, 0x0005002c, 0x00000011, 0x00000015, 0x00000014, 0x00000014, 0x00040020, 0x00000016, 0x00000001, 0x0000000c, 0x0004003b, 0x00000016, 0x00000017, 0x00000001, 0x00020014, 0x00000019, 0x0004002b, 0x00000006, 0x0000001d, 0xbf000000, 0x0005002c, 0x00000011, 0x0000001e, 0x00000014, 0x0000001d, 0x00040017, 0x0000001f, 0x00000006, 0x00000003, 0x00040020, 0x00000020, 0x00000003, 0x0000001f, 0x0004003b, 0x00000020, 0x00000021, 0x00000003, 0x0004002b, 0x00000006, 0x00000022, 0x3f800000, 0x0006002c, 0x0000001f, 0x00000023, 0x00000022, 0x00000014, 0x00000014, 0x0004002b, 0x0000000c, 0x00000026, 0x00000001, 0x0004002b, 0x00000006, 0x0000002a, 0x3f000000, 0x0005002c, 0x00000011, 0x0000002b, 0x0000002a, 0x0000002a, 0x0006002c, 0x0000001f, 0x0000002c, 0x00000014, 0x00000022, 0x00000014, 0x0004002b, 0x0000000c, 0x0000002f, 0x00000002, 0x0005002c, 0x00000011, 0x00000033, 0x0000001d, 0x0000002a, 0x0006002c, 0x0000001f, 0x00000034, 0x00000014, 0x00000014, 0x00000022, 0x00040017, 0x00000035, 0x00000006, 0x00000004, 0x00040015, 0x00000036, 0x00000020, 0x00000000, 0x0004002b, 0x00000036, 0x00000037, 0x00000001, 0x0004001c, 0x00000038, 0x00000006, 0x00000037, 0x0006001e, 0x00000039, 0x00000035, 0x00000006, 0x00000038, 0x00000038, 0x00040020, 0x0000003a, 0x00000003, 0x00000039, 0x0004003b, 0x0000003a, 0x0000003b, 0x00000003, 0x00040020, 0x00000042, 0x00000003, 0x00000035, 0x00040017, 0x0000004a, 0x00000019, 0x00000002, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x00050041, 0x0000000e, 0x0000000f, 0x0000000b, 0x0000000d, 0x0004003d, 0x00000006, 0x00000010, 0x0000000f, 0x0004003d, 0x0000000c, 0x00000018, 0x00000017, 0x000500aa, 0x00000019, 0x0000001a, 0x00000018, 0x0000000d, 0x000300f7, 0x0000001c, 0x00000000, 0x000400fa, 0x0000001a, 0x0000001b, 0x00000024, 0x000200f8, 0x0000001b, 0x0003003e, 0x00000021, 0x00000023, 0x000200f9, 0x0000001c, 0x000200f8, 0x00000024, 0x000500aa, 0x00000019, 0x00000027, 0x00000018, 0x00000026, 0x000300f7, 0x00000029, 0x00000000, 0x000400fa, 0x00000027, 0x00000028, 0x0000002d, 0x000200f8, 0x00000028, 0x0003003e, 0x00000021, 0x0000002c, 0x000200f9, 0x00000029, 0x000200f8, 0x0000002d, 0x000500aa, 0x00000019, 0x00000030, 0x00000018, 0x0000002f, 0x000300f7, 0x00000032, 0x00000000, 0x000400fa, 0x00000030, 0x00000031, 0x00000032, 0x000200f8, 0x00000031, 0x0003003e, 0x00000021, 0x00000034, 0x000200f9, 0x00000032, 0x000200f8, 0x00000032, 0x00050050, 0x0000004a, 0x0000004b, 0x00000030, 0x00000030, 0x000600a9, 0x00000011, 0x0000004c, 0x0000004b, 0x00000033, 0x00000015, 0x000200f9, 0x00000029, 0x000200f8, 0x00000029, 0x000700f5, 0x00000011, 0x00000045, 0x0000002b, 0x00000028, 0x0000004c, 0x00000032, 0x000200f9, 0x0000001c, 0x000200f8, 0x0000001c, 0x000700f5, 0x00000011, 0x00000044, 0x0000001e, 0x0000001b, 0x00000045, 0x00000029, 0x0005008e, 0x00000011, 0x0000003e, 0x00000044, 0x00000010, 0x00050051, 0x00000006, 0x0000003f, 0x0000003e, 0x00000000, 0x00050051, 0x00000006, 0x00000040, 0x0000003e, 0x00000001, 0x00070050, 0x00000035, 0x00000041, 0x0000003f, 0x00000040, 0x00000014, 0x00000022, 0x00050041, 0x00000042, 0x00000043, 0x0000003b, 0x0000000d, 0x0003003e, 0x00000043, 0x00000041, 0x000100fd, 0x00010038};
 
 static const uint32_t MY_FRAG_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b, 0x00000013, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0007000f, 0x00000004, 0x00000004, 0x6e69616d, 0x00000000, 0x00000009, 0x0000000c, 0x00030010, 0x00000004, 0x00000007, 0x00030003, 0x00000002, 0x000001c2, 0x00040005, 0x00000004, 0x6e69616d, 0x00000000, 0x00050005, 0x00000009, 0x4374756f, 0x726f6c6f, 0x00000000, 0x00040005, 0x0000000c, 0x6f6c6f63, 0x00000072, 0x00040047, 0x00000009, 0x0000001e, 0x00000000, 0x00040047, 0x0000000c, 0x0000001e, 0x00000000, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x00040017, 0x00000007, 0x00000006, 0x00000004, 0x00040020, 0x00000008, 0x00000003, 0x00000007, 0x0004003b, 0x00000008, 0x00000009, 0x00000003, 0x00040017, 0x0000000a, 0x00000006, 0x00000003, 0x00040020, 0x0000000b, 0x00000001, 0x0000000a, 0x0004003b, 0x0000000b, 0x0000000c, 0x00000001, 0x0004002b, 0x00000006, 0x0000000e, 0x3f800000, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x0004003d, 0x0000000a, 0x0000000d, 0x0000000c, 0x00050051, 0x00000006, 0x0000000f, 0x0000000d, 0x00000000, 0x00050051, 0x00000006, 0x00000010, 0x0000000d, 0x00000001, 0x00050051, 0x00000006, 0x00000011, 0x0000000d, 0x00000002, 0x00070050, 0x00000007, 0x00000012, 0x0000000f, 0x00000010, 0x00000011, 0x0000000e, 0x0003003e, 0x00000009, 0x00000012, 0x000100fd, 0x00010038};
@@ -15,7 +28,7 @@ VulkanTriangle::VulkanTriangle()
 
     driver.vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)GetProcAddress(library, "vkGetInstanceProcAddr");
     assert(driver.vkGetInstanceProcAddr && "vkGetInstanceProcAddr");
-#elif defined(USE_LINUX_PLATFORM)
+#elif defined(USE_LINUX_PLATFORM) || defined(USE_HARMONY_OS_PLATFORM)
     void *library = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_LOCAL);
     if (!library)
     {
@@ -81,7 +94,7 @@ VulkanTriangle::VulkanTriangle()
     auto version_minor = VK_VERSION_MINOR(support_vulkan_version);
     auto version_patch = VK_VERSION_PATCH(support_vulkan_version);
 
-    std::cout << "Support Vulkan: " << version_major << "." << version_minor << "." << version_patch << std::endl;
+    MyPrint("Support Vulkan: %o.%o.%o\n", version_major, version_minor, version_patch);
 
     {
         driver.vkEnumerateInstanceLayerProperties = (PFN_vkEnumerateInstanceLayerProperties)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceLayerProperties");
@@ -112,7 +125,7 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &layer_property : layer_properties)
         {
-            std::cout << "[layer]: " << layer_property.layerName << " - (" << layer_property.description << ")" << std::endl;
+            MyPrint("[layer]: %s - (%s)\n", layer_property.layerName, layer_property.description);
 
             if (std::string(layer_property.layerName) == std::string("VK_LAYER_KHRONOS_validation"))
             {
@@ -135,7 +148,7 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &extension_property : extension_properties)
         {
-            std::cout << "[instance-extension]: " << extension_property.extensionName << std::endl;
+            MyPrint("[instance-extension]: %s\n", extension_property.extensionName);
 
             if (std::string(extension_property.extensionName) == std::string(VK_KHR_SURFACE_EXTENSION_NAME)) // "VK_KHR_surface"
             {
@@ -174,6 +187,11 @@ VulkanTriangle::VulkanTriangle()
                     enabled_instance_extensions.push_back(extension_property.extensionName);
                 }
             */
+#elif defined(USE_HARMONY_OS_PLATFORM)
+            else if (std::string(extension_property.extensionName) == std::string("VK_OHOS_surface")) // VK_OHOS_SURFACE_EXTENSION_NAME
+            {
+                enabled_instance_extensions.push_back(extension_property.extensionName);
+            }
 #else
             throw std::runtime_error("Surface Not compatible with this platform!");
 #endif
@@ -208,7 +226,7 @@ VulkanTriangle::VulkanTriangle()
     }
     else
     {
-        std::cout << "vkCreateInstance success" << std::endl;
+        MyPrint("vkCreateInstance success\n");
     }
 
     driver.vkDestroyInstance = (PFN_vkDestroyInstance)driver.vkGetInstanceProcAddr(this->instance, "vkDestroyInstance");
@@ -280,7 +298,7 @@ VulkanTriangle::VulkanTriangle()
     }
     else
     {
-        std::cout << "Select Physical Device:" << target_physical_device_name << std::endl;
+        MyPrint("Select Physical Device: %s\n", target_physical_device_name.c_str());
     }
 
     uint32_t queue_family_count = 0;
@@ -325,7 +343,7 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &extension_property : extension_properties)
         {
-            std::cout << "[device-extension]: " << extension_property.extensionName << std::endl;
+            MyPrint("[device-extension]: %s\n", extension_property.extensionName);
 
             if (std::string(extension_property.extensionName) == std::string(VK_KHR_SWAPCHAIN_EXTENSION_NAME)) // "VK_KHR_swapchain"
             {
@@ -362,7 +380,7 @@ VulkanTriangle::VulkanTriangle()
     {
         throw std::runtime_error("vkCreateDevice failed!");
     }
-    std::cout << "vkCreateDevice success" << std::endl;
+    MyPrint("vkCreateDevice success\n");
 
     {
         driver.vkCreateImage = (PFN_vkCreateImage)driver.vkGetDeviceProcAddr(this->device, "vkCreateImage");
@@ -568,8 +586,8 @@ VulkanTriangle::VulkanTriangle()
         }
     }
 
-    std::cout << "visible coherent memory index:" << visible_coherent_memory_index << std::endl;
-    std::cout << "device local memory index:" << device_local_memory_index << std::endl;
+    MyPrint("visible coherent memory index: %o\n", visible_coherent_memory_index);
+    MyPrint("device local memory index: %o\n", device_local_memory_index);
 
     if (visible_coherent_memory_index == std::numeric_limits<uint32_t>::max() || device_local_memory_index == std::numeric_limits<uint32_t>::max())
     {
@@ -611,10 +629,10 @@ VulkanTriangle::~VulkanTriangle()
     driver.vkDestroySurfaceKHR(this->instance, this->surface, nullptr);
 
     driver.vkDestroyDevice(this->device, nullptr);
-    std::cout << "vkDestroyDevice success" << std::endl;
+    MyPrint("vkDestroyDevice success\n");
 
     driver.vkDestroyInstance(this->instance, nullptr);
-    std::cout << "vkDestroyInstance success" << std::endl;
+    MyPrint("vkDestroyInstance success\n");
 }
 
 void VulkanTriangle::CreateSurface(void *window)
@@ -624,7 +642,22 @@ void VulkanTriangle::CreateSurface(void *window)
         throw std::runtime_error("Can not get window when surface create!");
     }
 
+#if defined(USE_WINDOWS_PLATFORM) || defined(USE_LINUX_PLATFORM)
     glfwCreateWindowSurface(this->instance, (GLFWwindow *)window, NULL, &this->surface);
+#elif defined(USE_HARMONY_OS_PLATFORM)
+    driver.vkCreateSurfaceOHOS = (PFN_vkCreateSurfaceOHOS)driver.vkGetInstanceProcAddr(this->instance, "vkCreateSurfaceOHOS");
+    assert(driver.vkCreateSurfaceOHOS && "vkCreateSurfaceOHOS");
+
+    VkSurfaceCreateInfoOHOS vk_surface_create_info_ohos = {};
+    vk_surface_create_info_ohos.sType = VkStructureType::VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    vk_surface_create_info_ohos.pNext = nullptr;
+    vk_surface_create_info_ohos.flags = 0;
+    vk_surface_create_info_ohos.window = (OHNativeWindow *)window;
+
+    driver.vkCreateSurfaceOHOS(this->instance, &vk_surface_create_info_ohos, nullptr, &this->surface);
+#else
+    throw std::runtime_error("Not compatible with this platform!");
+#endif
 
     driver.vkGetPhysicalDeviceSurfaceFormatsKHR = (PFN_vkGetPhysicalDeviceSurfaceFormatsKHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceSurfaceFormatsKHR");
     assert(driver.vkGetPhysicalDeviceSurfaceFormatsKHR && "vkGetPhysicalDeviceSurfaceFormatsKHR");
@@ -688,7 +721,7 @@ void VulkanTriangle::CreateSurface(void *window)
         throw std::runtime_error("Can not find a appropriate format for swapchain as color attachment!");
     }
 
-    std::cout << "swapchain use " << to_string(this->targetSwapchainFormat) << " format" << std::endl;
+    MyPrint("swapchain use %s format\n", to_string(this->targetSwapchainFormat).c_str());
 
     VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
     vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -1051,7 +1084,7 @@ void VulkanTriangle::CreateSurface(void *window)
     VkResult pipeline_create_result = driver.vkCreateGraphicsPipelines(this->device, VK_NULL_HANDLE, 1, &vk_graphics_pipeline_create_info, nullptr, &this->pipeline);
     if (pipeline_create_result != VkResult::VK_SUCCESS)
     {
-        std::cout << "pipeline_create_result:" << pipeline_create_result << std::endl;
+        MyPrint("pipeline_create_result: %o\n", pipeline_create_result);
         throw std::runtime_error("Can not create rendering pipeline!");
     }
 
@@ -1123,7 +1156,8 @@ void VulkanTriangle::Draw(float time)
         VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
         driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
 
-        //std::cout << "new (width = " << vk_surface_capabilities_khr.currentExtent.width << ", height = " << vk_surface_capabilities_khr.currentExtent.height << ")" << std::endl;
+        MyPrint("new (width = %g, height = %g)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.height);
+
         if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
         {
             // TODO: not drawing
@@ -1356,6 +1390,7 @@ void VulkanTriangle::Draw(float time)
     // Vulkan loop
 }
 
+#if defined(USE_WINDOWS_PLATFORM) || defined(USE_LINUX_PLATFORM)
 int main()
 {
     if (!glfwInit())
@@ -1381,3 +1416,4 @@ int main()
 
     return 0;
 }
+#endif

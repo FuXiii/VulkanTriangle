@@ -2,36 +2,46 @@
 
 #if defined(_WIN16) || defined(_WIN32) || defined(_WIN64)
 #define USE_WINDOWS_PLATFORM
+#elif defined(OHOS) // NOTE: must before linux marco for override linux statement
+#define USE_HARMONY_OS_PLATFORM
 #elif defined(__linux) || defined(__linux__)
 #define USE_LINUX_PLATFORM
 #elif defined(__APPLE__)
 #define USE_APPLE_PLATFORM
-#elif defined(OHOS)
-#define USE_HARMONY_OS
 #endif
 
 #if defined(USE_WINDOWS_PLATFORM)
 #include <Windows.h>
-#elif defined(USE_LINUX_PLATFORM) || defined(USE_APPLE_PLATFORM)
+#elif defined(USE_LINUX_PLATFORM) || defined(USE_APPLE_PLATFORM) || defined(USE_HARMONY_OS_PLATFORM)
 #include <dlfcn.h>
 #include <stdlib.h>
-#elif defined(USE_HARMONY_OS)
 #endif
 
 #include <vulkan/vulkan.h>
+
+#if defined(USE_WINDOWS_PLATFORM) || defined(USE_LINUX_PLATFORM)
+#include <GLFW/glfw3.h>
+#endif
+
+#if defined(USE_HARMONY_OS_PLATFORM)
+#include <native_window/external_window.h>
+#include <hilog/log.h>
+#endif
 
 #include <assert.h>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
 
-#include <GLFW/glfw3.h>
-
 #include <glm/ext.hpp>
 
 #include "VkString.h"
 
 #include <chrono>
+
+#if defined(USE_HARMONY_OS_PLATFORM)
+#include <vulkan/vulkan_ohos.h>
+#endif
 
 struct VkDriver
 {
@@ -63,6 +73,9 @@ struct VkDriver
 
     PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = nullptr;
 
+#if defined(USE_HARMONY_OS_PLATFORM)
+    PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS = nullptr;
+#endif
     PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR = nullptr;
     PFN_vkCreateSwapchainKHR vkCreateSwapchainKHR = nullptr;
     PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR = nullptr;
@@ -188,7 +201,7 @@ class VulkanTriangle
     ~VulkanTriangle();
 
     void CreateSurface(void *window);
-    //void ResizeSurface();
+    // void ResizeSurface();
 
     void Draw(float time);
 };

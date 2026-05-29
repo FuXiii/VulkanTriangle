@@ -39,6 +39,8 @@
 > >研究尝试适配 `鸿蒙 6` 。
 >
 > >更新 `Vulkan` 头文件版本到 `1.4.352` 。
+>
+> >更新 `VulkanTriangle.h/cpp` 适配 `Open/HarmonyOS` 。
 
 > **2026/5/26**
 >
