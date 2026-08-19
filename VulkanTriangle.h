@@ -200,8 +200,10 @@ class VulkanTriangle
     VulkanTriangle();
     ~VulkanTriangle();
 
+    void CreateSurface(void *window, uint32_t width, uint32_t height);
+
     void CreateSurface(void *window);
-    // void ResizeSurface();
+    void ResizeSurface(uint32_t width, uint32_t height);
 
     void Draw(float time);
 };

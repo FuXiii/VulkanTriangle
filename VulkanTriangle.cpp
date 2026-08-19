@@ -1,18 +1,102 @@
 #include <VulkanTriangle.h>
 
 #include <stdio.h>
+#include <string.h>
+
+#if defined(USE_HARMONY_OS_PLATFORM)
+#define MyPrint(fmt, ...) OH_LOG_Print(LOG_APP, LOG_INFO, 0x1, "VulkanTriangle", fmt, ##__VA_ARGS__);
+#else
 void MyPrint(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-#if defined(USE_HARMONY_OS_PLATFORM)
-    OH_LOG_Print(LOG_APP, LOG_DEBUG, 0x1, "VulkanTriangle", format, args);
-#else
     vprintf(format, args);
-#endif
     va_end(args);
 }
+#endif
 
+void PrintVkSurfaceTransformFlagBitsKHR(VkSurfaceTransformFlagBitsKHR stfb)
+{
+    switch (stfb)
+    {
+    case VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR\n");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR\n");
+    }
+    break;
+    }
+}
+
+void PrintVkSurfaceTransformFlagsKHR(VkSurfaceTransformFlagsKHR stf)
+{
+    if ((stf & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR) == VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR);
+    }
+}
 static const uint32_t MY_VERT_SHADER_BIN[] = {0x07230203, 0x00010000, 0x000d000b, 0x0000004d, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0008000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x00000017, 0x00000021, 0x0000003b, 0x00050048, 0x00000009, 0x00000000, 0x00000023, 0x00000000, 0x00030047, 0x00000009, 0x00000002, 0x00040047, 0x00000017, 0x0000000b, 0x0000002a, 0x00040047, 0x00000021, 0x0000001e, 0x00000000, 0x00050048, 0x00000039, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x00000039, 0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x00000039, 0x00000002, 0x0000000b, 0x00000003, 0x00050048, 0x00000039, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x00000039, 0x00000002, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x0003001e, 0x00000009, 0x00000006, 0x00040020, 0x0000000a, 0x00000009, 0x00000009, 0x0004003b, 0x0000000a, 0x0000000b, 0x00000009, 0x00040015, 0x0000000c, 0x00000020, 0x00000001, 0x0004002b, 0x0000000c, 0x0000000d, 0x00000000, 0x00040020, 0x0000000e, 0x00000009, 0x00000006, 0x00040017, 0x00000011, 0x00000006, 0x00000002, 0x0004002b, 0x00000006, 0x00000014, 0x00000000, 0x0005002c, 0x00000011, 0x00000015, 0x00000014, 0x00000014, 0x00040020, 0x00000016, 0x00000001, 0x0000000c, 0x0004003b, 0x00000016, 0x00000017, 0x00000001, 0x00020014, 0x00000019, 0x0004002b, 0x00000006, 0x0000001d, 0xbf000000, 0x0005002c, 0x00000011, 0x0000001e, 0x00000014, 0x0000001d, 0x00040017, 0x0000001f, 0x00000006, 0x00000003, 0x00040020, 0x00000020, 0x00000003, 0x0000001f, 0x0004003b, 0x00000020, 0x00000021, 0x00000003, 0x0004002b, 0x00000006, 0x00000022, 0x3f800000, 0x0006002c, 0x0000001f, 0x00000023, 0x00000022, 0x00000014, 0x00000014, 0x0004002b, 0x0000000c, 0x00000026, 0x00000001, 0x0004002b, 0x00000006, 0x0000002a, 0x3f000000, 0x0005002c, 0x00000011, 0x0000002b, 0x0000002a, 0x0000002a, 0x0006002c, 0x0000001f, 0x0000002c, 0x00000014, 0x00000022, 0x00000014, 0x0004002b, 0x0000000c, 0x0000002f, 0x00000002, 0x0005002c, 0x00000011, 0x00000033, 0x0000001d, 0x0000002a, 0x0006002c, 0x0000001f, 0x00000034, 0x00000014, 0x00000014, 0x00000022, 0x00040017, 0x00000035, 0x00000006, 0x00000004, 0x00040015, 0x00000036, 0x00000020, 0x00000000, 0x0004002b, 0x00000036, 0x00000037, 0x00000001, 0x0004001c, 0x00000038, 0x00000006, 0x00000037, 0x0006001e, 0x00000039, 0x00000035, 0x00000006, 0x00000038, 0x00000038, 0x00040020, 0x0000003a, 0x00000003, 0x00000039, 0x0004003b, 0x0000003a, 0x0000003b, 0x00000003, 0x00040020, 0x00000042, 0x00000003, 0x00000035, 0x00040017, 0x0000004a, 0x00000019, 0x00000002, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x00050041, 0x0000000e, 0x0000000f, 0x0000000b, 0x0000000d, 0x0004003d, 0x00000006, 0x00000010, 0x0000000f, 0x0004003d, 0x0000000c, 0x00000018, 0x00000017, 0x000500aa, 0x00000019, 0x0000001a, 0x00000018, 0x0000000d, 0x000300f7, 0x0000001c, 0x00000000, 0x000400fa, 0x0000001a, 0x0000001b, 0x00000024, 0x000200f8, 0x0000001b, 0x0003003e, 0x00000021, 0x00000023, 0x000200f9, 0x0000001c, 0x000200f8, 0x00000024, 0x000500aa, 0x00000019, 0x00000027, 0x00000018, 0x00000026, 0x000300f7, 0x00000029, 0x00000000, 0x000400fa, 0x00000027, 0x00000028, 0x0000002d, 0x000200f8, 0x00000028, 0x0003003e, 0x00000021, 0x0000002c, 0x000200f9, 0x00000029, 0x000200f8, 0x0000002d, 0x000500aa, 0x00000019, 0x00000030, 0x00000018, 0x0000002f, 0x000300f7, 0x00000032, 0x00000000, 0x000400fa, 0x00000030, 0x00000031, 0x00000032, 0x000200f8, 0x00000031, 0x0003003e, 0x00000021, 0x00000034, 0x000200f9, 0x00000032, 0x000200f8, 0x00000032, 0x00050050, 0x0000004a, 0x0000004b, 0x00000030, 0x00000030, 0x000600a9, 0x00000011, 0x0000004c, 0x0000004b, 0x00000033, 0x00000015, 0x000200f9, 0x00000029, 0x000200f8, 0x00000029, 0x000700f5, 0x00000011, 0x00000045, 0x0000002b, 0x00000028, 0x0000004c, 0x00000032, 0x000200f9, 0x0000001c, 0x000200f8, 0x0000001c, 0x000700f5, 0x00000011, 0x00000044, 0x0000001e, 0x0000001b, 0x00000045, 0x00000029, 0x0005008e, 0x00000011, 0x0000003e, 0x00000044, 0x00000010, 0x00050051, 0x00000006, 0x0000003f, 0x0000003e, 0x00000000, 0x00050051, 0x00000006, 0x00000040, 0x0000003e, 0x00000001, 0x00070050, 0x00000035, 0x00000041, 0x0000003f, 0x00000040, 0x00000014, 0x00000022, 0x00050041, 0x00000042, 0x00000043, 0x0000003b, 0x0000000d, 0x0003003e, 0x00000043, 0x00000041, 0x000100fd, 0x00010038};
 
 static const uint32_t MY_FRAG_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b, 0x00000013, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0007000f, 0x00000004, 0x00000004, 0x6e69616d, 0x00000000, 0x00000009, 0x0000000c, 0x00030010, 0x00000004, 0x00000007, 0x00030003, 0x00000002, 0x000001c2, 0x00040005, 0x00000004, 0x6e69616d, 0x00000000, 0x00050005, 0x00000009, 0x4374756f, 0x726f6c6f, 0x00000000, 0x00040005, 0x0000000c, 0x6f6c6f63, 0x00000072, 0x00040047, 0x00000009, 0x0000001e, 0x00000000, 0x00040047, 0x0000000c, 0x0000001e, 0x00000000, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x00040017, 0x00000007, 0x00000006, 0x00000004, 0x00040020, 0x00000008, 0x00000003, 0x00000007, 0x0004003b, 0x00000008, 0x00000009, 0x00000003, 0x00040017, 0x0000000a, 0x00000006, 0x00000003, 0x00040020, 0x0000000b, 0x00000001, 0x0000000a, 0x0004003b, 0x0000000b, 0x0000000c, 0x00000001, 0x0004002b, 0x00000006, 0x0000000e, 0x3f800000, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x0004003d, 0x0000000a, 0x0000000d, 0x0000000c, 0x00050051, 0x00000006, 0x0000000f, 0x0000000d, 0x00000000, 0x00050051, 0x00000006, 0x00000010, 0x0000000d, 0x00000001, 0x00050051, 0x00000006, 0x00000011, 0x0000000d, 0x00000002, 0x00070050, 0x00000007, 0x00000012, 0x0000000f, 0x00000010, 0x00000011, 0x0000000e, 0x0003003e, 0x00000009, 0x00000012, 0x000100fd, 0x00010038};
@@ -90,11 +174,15 @@ VulkanTriangle::VulkanTriangle()
         assert(support_vulkan_version && "Not support Vulkan!");
     }
 
-    auto version_major = VK_VERSION_MAJOR(support_vulkan_version);
-    auto version_minor = VK_VERSION_MINOR(support_vulkan_version);
-    auto version_patch = VK_VERSION_PATCH(support_vulkan_version);
+    auto version_major = VK_API_VERSION_MAJOR(support_vulkan_version);
+    auto version_minor = VK_API_VERSION_MINOR(support_vulkan_version);
+    auto version_patch = VK_API_VERSION_PATCH(support_vulkan_version);
 
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("Support Vulkan: %{public}u.%{public}u.%{public}u\n", version_major, version_minor, version_patch);
+#else
     MyPrint("Support Vulkan: %o.%o.%o\n", version_major, version_minor, version_patch);
+#endif
 
     {
         driver.vkEnumerateInstanceLayerProperties = (PFN_vkEnumerateInstanceLayerProperties)driver.vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceLayerProperties");
@@ -114,7 +202,7 @@ VulkanTriangle::VulkanTriangle()
     vk_application_info.applicationVersion = 0;
     vk_application_info.pEngineName = nullptr;
     vk_application_info.engineVersion = 0;
-    vk_application_info.apiVersion = support_vulkan_version;
+    vk_application_info.apiVersion = support_vulkan_version; // NOTE:??? Need check it when OHOS use VK_API_VERSION_1_0 maybe a mistake
 
     std::vector<std::string> enable_instance_layers;
     {
@@ -125,7 +213,11 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &layer_property : layer_properties)
         {
+#if defined(USE_HARMONY_OS_PLATFORM)
+            MyPrint("[layer]: %{public}s - (%{public}s)\n", layer_property.layerName, layer_property.description);
+#else
             MyPrint("[layer]: %s - (%s)\n", layer_property.layerName, layer_property.description);
+#endif
 
             if (std::string(layer_property.layerName) == std::string("VK_LAYER_KHRONOS_validation"))
             {
@@ -148,7 +240,11 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &extension_property : extension_properties)
         {
+#if defined(USE_HARMONY_OS_PLATFORM)
+            MyPrint("[instance-extension]: %{public}s\n", extension_property.extensionName);
+#else
             MyPrint("[instance-extension]: %s\n", extension_property.extensionName);
+#endif
 
             if (std::string(extension_property.extensionName) == std::string(VK_KHR_SURFACE_EXTENSION_NAME)) // "VK_KHR_surface"
             {
@@ -298,7 +394,11 @@ VulkanTriangle::VulkanTriangle()
     }
     else
     {
+#if defined(USE_HARMONY_OS_PLATFORM)
+        MyPrint("Select Physical Device: %{public}s\n", target_physical_device_name.c_str());
+#else
         MyPrint("Select Physical Device: %s\n", target_physical_device_name.c_str());
+#endif
     }
 
     uint32_t queue_family_count = 0;
@@ -343,8 +443,11 @@ VulkanTriangle::VulkanTriangle()
 
         for (auto &extension_property : extension_properties)
         {
+#if defined(USE_HARMONY_OS_PLATFORM)
+            MyPrint("[device-extension]: %{public}s\n", extension_property.extensionName);
+#else
             MyPrint("[device-extension]: %s\n", extension_property.extensionName);
-
+#endif
             if (std::string(extension_property.extensionName) == std::string(VK_KHR_SWAPCHAIN_EXTENSION_NAME)) // "VK_KHR_swapchain"
             {
                 enable_device_extensions.push_back(extension_property.extensionName);
@@ -586,8 +689,13 @@ VulkanTriangle::VulkanTriangle()
         }
     }
 
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("visible coherent memory index: %{public}u\n", visible_coherent_memory_index);
+    MyPrint("device local memory index: %{public}u\n", device_local_memory_index);
+#else
     MyPrint("visible coherent memory index: %o\n", visible_coherent_memory_index);
     MyPrint("device local memory index: %o\n", device_local_memory_index);
+#endif
 
     if (visible_coherent_memory_index == std::numeric_limits<uint32_t>::max() || device_local_memory_index == std::numeric_limits<uint32_t>::max())
     {
@@ -600,6 +708,52 @@ VulkanTriangle::VulkanTriangle()
     vk_command_pool_create_info.flags = 0;
     vk_command_pool_create_info.queueFamilyIndex = queue_family_index;
     driver.vkCreateCommandPool(this->device, &vk_command_pool_create_info, nullptr, &this->commandPool);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    {
+        // std::vector<VkDescriptorPoolSize> vk_descriptor_pool_sizes = {};
+        //{
+        //     VkDescriptorPoolSize vk_descriptor_pool_size;
+        //     vk_descriptor_pool_size.descriptorCount = 1000;
+        //
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //}
+        //
+        // VkDescriptorPoolCreateInfo vk_descriptor_pool_create_info = {};
+        // vk_descriptor_pool_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        // vk_descriptor_pool_create_info.pNext = nullptr;
+        // vk_descriptor_pool_create_info.flags = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        // vk_descriptor_pool_create_info.maxSets = vk_descriptor_pool_sizes.size() * 1000;
+        // vk_descriptor_pool_create_info.poolSizeCount = vk_descriptor_pool_sizes.size();
+        // vk_descriptor_pool_create_info.pPoolSizes = vk_descriptor_pool_sizes.data();
+        //
+        // VkResult result = driver.vkCreateDescriptorPool(this->device, &vk_descriptor_pool_create_info, nullptr, &this->descriptorPool);
+        // if (result != VkResult::VK_SUCCESS)
+        //{
+        //    throw std::runtime_error("Can not create VkDescriptorPool!");
+        //}
+    }
 }
 
 VulkanTriangle::~VulkanTriangle()
@@ -614,7 +768,7 @@ VulkanTriangle::~VulkanTriangle()
     driver.vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
 
     driver.vkDestroyRenderPass(this->device, this->renderPass, nullptr);
-    driver.vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
+    // driver.vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
 
     for (VkImageView &vk_image_view_item : this->swapchainImageViews)
     {
@@ -637,6 +791,8 @@ VulkanTriangle::~VulkanTriangle()
 
 void VulkanTriangle::CreateSurface(void *window)
 {
+    MyPrint("VulkanTriangle::CreateSurface(void *window)\n");
+
     if (window == nullptr)
     {
         throw std::runtime_error("Can not get window when surface create!");
@@ -655,6 +811,14 @@ void VulkanTriangle::CreateSurface(void *window)
     vk_surface_create_info_ohos.window = (OHNativeWindow *)window;
 
     driver.vkCreateSurfaceOHOS(this->instance, &vk_surface_create_info_ohos, nullptr, &this->surface);
+    if (result == VkResult::VK_SUCCESS)
+    {
+        MyPrint("vkCreateSurfaceOHOS success\n");
+    }
+    else
+    {
+        MyPrint("[Error] vkCreateSurfaceOHOS failed!\n");
+    }
 #else
     throw std::runtime_error("Not compatible with this platform!");
 #endif
@@ -676,6 +840,534 @@ void VulkanTriangle::CreateSurface(void *window)
 
     VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
     driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+    {
+        MyPrint("CreateSurface::vk_surface_capabilities_khr:");
+        PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.supportedTransforms);
+    }
+
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("CreateSurface::surface extent: (with = %{public}u, height = %{public}u)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.width);
+#else
+    MyPrint("CreateSurface::surface extent: (with = %u, height = %u)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.width);
+#endif
+
+#if defined(USE_HARMONY_OS_PLATFORM) // NOTE:???
+    {
+        vk_surface_capabilities_khr.currentExtent.width = width;
+        vk_surface_capabilities_khr.currentExtent.height = height;
+    }
+#endif
+
+    //this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
+    //this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
+
+    driver.vkGetPhysicalDeviceSurfacePresentModesKHR = (PFN_vkGetPhysicalDeviceSurfacePresentModesKHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceSurfacePresentModesKHR");
+    assert(driver.vkGetPhysicalDeviceSurfacePresentModesKHR && "vkGetPhysicalDeviceSurfacePresentModesKHR");
+
+    uint32_t swapchain_present_mode_count = 0;
+    driver.vkGetPhysicalDeviceSurfacePresentModesKHR(this->targetPhysicalDevice, this->surface, &swapchain_present_mode_count, nullptr);
+    if (swapchain_present_mode_count != 0)
+    {
+        this->presentModes.resize(swapchain_present_mode_count);
+        driver.vkGetPhysicalDeviceSurfacePresentModesKHR(this->targetPhysicalDevice, this->surface, &swapchain_present_mode_count, this->presentModes.data());
+    }
+
+    for (VkPresentModeKHR present_mode_item : this->presentModes)
+    {
+        if (present_mode_item == VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR)
+        {
+            this->isSwapchainSupportFifo = true;
+        }
+    }
+
+    {
+        uint32_t surface_format_count = 0;
+        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(this->targetPhysicalDevice, this->surface, &surface_format_count, nullptr);
+        std::vector<VkSurfaceFormatKHR> surface_formats(surface_format_count);
+        driver.vkGetPhysicalDeviceSurfaceFormatsKHR(this->targetPhysicalDevice, this->surface, &surface_format_count, surface_formats.data());
+        for (auto &surface_format : surface_formats)
+        {
+            VkFormatProperties vk_format_properties = {};
+            driver.vkGetPhysicalDeviceFormatProperties(this->targetPhysicalDevice, surface_format.format, &vk_format_properties);
+            if ((vk_format_properties.optimalTilingFeatures & VkFormatFeatureFlagBits::VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VkFormatFeatureFlagBits::VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT && surface_format.colorSpace == VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            {
+                this->targetSwapchainFormat = surface_format.format;
+                break;
+            }
+        }
+    }
+
+    if (this->targetSwapchainFormat == VkFormat::VK_FORMAT_UNDEFINED)
+    {
+        throw std::runtime_error("Can not find a appropriate format for swapchain as color attachment!");
+    }
+
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("swapchain use %{public}s format\n", to_string(this->targetSwapchainFormat).c_str());
+#else
+    MyPrint("swapchain use %s format\n", to_string(this->targetSwapchainFormat).c_str());
+#endif
+
+    driver.vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)driver.vkGetDeviceProcAddr(this->device, "vkGetSwapchainImagesKHR");
+    assert(driver.vkGetSwapchainImagesKHR && "vkGetSwapchainImagesKHR");
+
+    {
+        VkAttachmentReference color_attachment = {};
+        {
+            color_attachment.attachment = 0;
+            color_attachment.layout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        }
+
+        VkSubpassDescription color_pass = {};
+        {
+            color_pass.flags = 0;
+            color_pass.pipelineBindPoint = VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS;
+            color_pass.inputAttachmentCount = 0;
+            color_pass.pInputAttachments = nullptr;
+            color_pass.colorAttachmentCount = 1;
+            color_pass.pColorAttachments = &color_attachment;
+            color_pass.pResolveAttachments = nullptr;
+            color_pass.pDepthStencilAttachment = nullptr;
+            color_pass.preserveAttachmentCount = 0;
+            color_pass.pPreserveAttachments = nullptr;
+        }
+
+        VkAttachmentDescription color_attachment_description = {};
+        {
+            color_attachment_description.flags = 0;
+            color_attachment_description.format = this->targetSwapchainFormat;
+            color_attachment_description.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+            color_attachment_description.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+            color_attachment_description.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+            color_attachment_description.stencilLoadOp = VkAttachmentLoadOp ::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+            color_attachment_description.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
+            color_attachment_description.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+            color_attachment_description.finalLayout = VkImageLayout::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        }
+
+        std::vector<VkAttachmentDescription> vk_attachment_descriptions;
+        vk_attachment_descriptions.push_back(color_attachment_description);
+
+        {
+            VkRenderPassCreateInfo vk_render_pass_create_info = {};
+            vk_render_pass_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+            vk_render_pass_create_info.pNext = nullptr;
+            vk_render_pass_create_info.flags = 0;
+            vk_render_pass_create_info.attachmentCount = vk_attachment_descriptions.size();
+            vk_render_pass_create_info.pAttachments = vk_attachment_descriptions.data();
+            vk_render_pass_create_info.subpassCount = 1;
+            vk_render_pass_create_info.pSubpasses = &color_pass;
+            vk_render_pass_create_info.dependencyCount = 0;
+            vk_render_pass_create_info.pDependencies = nullptr;
+
+            driver.vkCreateRenderPass(this->device, &vk_render_pass_create_info, nullptr, &this->renderPass);
+        }
+    }
+
+    {
+        VkShaderModule my_vertex_shader_module = VK_NULL_HANDLE;
+        VkShaderModule my_fragment_shader_module = VK_NULL_HANDLE;
+        {
+            VkShaderModuleCreateInfo vk_shader_module_create_info = {};
+            vk_shader_module_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+            vk_shader_module_create_info.pNext = 0;
+            vk_shader_module_create_info.flags = 0;
+            vk_shader_module_create_info.codeSize = sizeof(MY_VERT_SHADER_BIN);
+            vk_shader_module_create_info.pCode = MY_VERT_SHADER_BIN;
+
+            VkResult result = driver.vkCreateShaderModule(this->device, &vk_shader_module_create_info, nullptr, &my_vertex_shader_module);
+            if (result != VkResult::VK_SUCCESS)
+            {
+                throw std::runtime_error("Can not create vertex shader module!");
+            }
+
+            vk_shader_module_create_info.codeSize = sizeof(MY_FRAG_SHADER_BIN);
+            vk_shader_module_create_info.pCode = MY_FRAG_SHADER_BIN;
+
+            result = driver.vkCreateShaderModule(this->device, &vk_shader_module_create_info, nullptr, &my_fragment_shader_module);
+            if (result != VkResult::VK_SUCCESS)
+            {
+                throw std::runtime_error("Can not create fragment shader module!");
+            }
+        }
+
+        VkPipelineShaderStageCreateInfo vertex_shader_stage = {};
+        vertex_shader_stage.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        vertex_shader_stage.pNext = nullptr;
+        vertex_shader_stage.flags = 0;
+        vertex_shader_stage.stage = VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;
+        vertex_shader_stage.module = my_vertex_shader_module;
+        vertex_shader_stage.pName = "main";
+        vertex_shader_stage.pSpecializationInfo = nullptr;
+
+        VkPipelineShaderStageCreateInfo fragment_shader_stage = {};
+        fragment_shader_stage.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        fragment_shader_stage.pNext = nullptr;
+        fragment_shader_stage.flags = 0;
+        fragment_shader_stage.stage = VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT;
+        fragment_shader_stage.module = my_fragment_shader_module;
+        fragment_shader_stage.pName = "main";
+        fragment_shader_stage.pSpecializationInfo = nullptr;
+
+        std::vector<VkPipelineShaderStageCreateInfo> shader_stages;
+        shader_stages.push_back(vertex_shader_stage);
+        shader_stages.push_back(fragment_shader_stage);
+
+        VkPipelineInputAssemblyStateCreateInfo vk_pipeline_input_assembly_state_create_info = {};
+        vk_pipeline_input_assembly_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+        vk_pipeline_input_assembly_state_create_info.pNext = nullptr;
+        vk_pipeline_input_assembly_state_create_info.flags = 0;
+        vk_pipeline_input_assembly_state_create_info.topology = VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        vk_pipeline_input_assembly_state_create_info.primitiveRestartEnable = VK_FALSE;
+
+        VkViewport vk_viewport = {};
+        vk_viewport.x = 0;
+        vk_viewport.y = 0;
+        vk_viewport.width = vk_surface_capabilities_khr.currentExtent.width;
+        vk_viewport.height = vk_surface_capabilities_khr.currentExtent.height;
+        vk_viewport.minDepth = 0;
+        vk_viewport.maxDepth = 1;
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = vk_surface_capabilities_khr.currentExtent.width;
+        scissor.extent.height = vk_surface_capabilities_khr.currentExtent.height;
+
+        VkPipelineViewportStateCreateInfo vk_pipeline_viewport_state_create_info = {};
+        vk_pipeline_viewport_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        vk_pipeline_viewport_state_create_info.pNext = nullptr;
+        vk_pipeline_viewport_state_create_info.flags = 0;
+        vk_pipeline_viewport_state_create_info.viewportCount = 1;
+        vk_pipeline_viewport_state_create_info.pViewports = &vk_viewport;
+        vk_pipeline_viewport_state_create_info.scissorCount = 1;
+        vk_pipeline_viewport_state_create_info.pScissors = &scissor;
+
+        VkPipelineRasterizationStateCreateInfo vk_pipeline_rasterization_state_create_info = {};
+        vk_pipeline_rasterization_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+        vk_pipeline_rasterization_state_create_info.pNext = nullptr;
+        vk_pipeline_rasterization_state_create_info.flags = 0;
+        vk_pipeline_rasterization_state_create_info.depthClampEnable = VK_FALSE;
+        vk_pipeline_rasterization_state_create_info.rasterizerDiscardEnable = VK_FALSE;
+        vk_pipeline_rasterization_state_create_info.polygonMode = VkPolygonMode::VK_POLYGON_MODE_FILL;
+        vk_pipeline_rasterization_state_create_info.cullMode = VkCullModeFlagBits::VK_CULL_MODE_BACK_BIT;
+        vk_pipeline_rasterization_state_create_info.frontFace = VkFrontFace::VK_FRONT_FACE_CLOCKWISE;
+        vk_pipeline_rasterization_state_create_info.depthBiasEnable = VK_FALSE;
+        vk_pipeline_rasterization_state_create_info.depthBiasConstantFactor = 0;
+        vk_pipeline_rasterization_state_create_info.depthBiasClamp = 0;
+        vk_pipeline_rasterization_state_create_info.depthBiasSlopeFactor = 0;
+        vk_pipeline_rasterization_state_create_info.lineWidth = 1;
+
+        VkPipelineColorBlendAttachmentState vk_pipeline_color_blend_attachment_state = {};
+        vk_pipeline_color_blend_attachment_state.blendEnable = VK_FALSE;
+        vk_pipeline_color_blend_attachment_state.srcColorBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ZERO;
+        vk_pipeline_color_blend_attachment_state.dstColorBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ZERO;
+        vk_pipeline_color_blend_attachment_state.colorBlendOp = VkBlendOp::VK_BLEND_OP_ADD;
+        vk_pipeline_color_blend_attachment_state.srcAlphaBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ZERO;
+        vk_pipeline_color_blend_attachment_state.dstAlphaBlendFactor = VkBlendFactor::VK_BLEND_FACTOR_ZERO;
+        vk_pipeline_color_blend_attachment_state.alphaBlendOp = VkBlendOp::VK_BLEND_OP_ADD;
+        vk_pipeline_color_blend_attachment_state.colorWriteMask = VkColorComponentFlagBits::VK_COLOR_COMPONENT_R_BIT | VkColorComponentFlagBits::VK_COLOR_COMPONENT_G_BIT | VkColorComponentFlagBits::VK_COLOR_COMPONENT_B_BIT | VkColorComponentFlagBits::VK_COLOR_COMPONENT_A_BIT;
+
+        VkPipelineColorBlendStateCreateInfo vk_pipeline_color_blend_state_create_info = {};
+        vk_pipeline_color_blend_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+        vk_pipeline_color_blend_state_create_info.pNext = nullptr;
+        vk_pipeline_color_blend_state_create_info.flags = 0;
+        vk_pipeline_color_blend_state_create_info.logicOpEnable = VK_FALSE;
+        vk_pipeline_color_blend_state_create_info.logicOp = VkLogicOp::VK_LOGIC_OP_AND;
+        vk_pipeline_color_blend_state_create_info.attachmentCount = 1;
+        vk_pipeline_color_blend_state_create_info.pAttachments = &vk_pipeline_color_blend_attachment_state;
+        vk_pipeline_color_blend_state_create_info.blendConstants[0] = 0;
+        vk_pipeline_color_blend_state_create_info.blendConstants[1] = 0;
+        vk_pipeline_color_blend_state_create_info.blendConstants[2] = 0;
+        vk_pipeline_color_blend_state_create_info.blendConstants[3] = 0;
+
+        std::vector<VkDynamicState> vk_dynamic_states;
+        vk_dynamic_states.push_back(VkDynamicState::VK_DYNAMIC_STATE_VIEWPORT);
+        vk_dynamic_states.push_back(VkDynamicState::VK_DYNAMIC_STATE_SCISSOR);
+
+        VkPipelineDynamicStateCreateInfo vk_pipeline_dynamic_state_create_info = {};
+        vk_pipeline_dynamic_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        vk_pipeline_dynamic_state_create_info.pNext = nullptr;
+        vk_pipeline_dynamic_state_create_info.flags = 0;
+        vk_pipeline_dynamic_state_create_info.dynamicStateCount = vk_dynamic_states.size();
+        vk_pipeline_dynamic_state_create_info.pDynamicStates = vk_dynamic_states.data();
+
+        VkPushConstantRange vk_push_constant_range = {};
+        vk_push_constant_range.stageFlags = VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;
+        vk_push_constant_range.offset = 0;
+        vk_push_constant_range.size = sizeof(float);
+
+        VkPipelineLayoutCreateInfo vk_pipeline_layout_create_info = {};
+        vk_pipeline_layout_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        vk_pipeline_layout_create_info.pNext = nullptr;
+        vk_pipeline_layout_create_info.flags = 0;
+        vk_pipeline_layout_create_info.setLayoutCount = 0;
+        vk_pipeline_layout_create_info.pSetLayouts = nullptr;
+        vk_pipeline_layout_create_info.pushConstantRangeCount = 1;
+        vk_pipeline_layout_create_info.pPushConstantRanges = &vk_push_constant_range;
+
+        driver.vkCreatePipelineLayout(this->device, &vk_pipeline_layout_create_info, nullptr, &this->pipelineLayout);
+
+        VkPipelineVertexInputStateCreateInfo vk_pipeline_vertex_input_state_create_info = {};
+        vk_pipeline_vertex_input_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+        vk_pipeline_vertex_input_state_create_info.pNext = nullptr;
+        vk_pipeline_vertex_input_state_create_info.flags = 0;
+        vk_pipeline_vertex_input_state_create_info.vertexBindingDescriptionCount = 0;
+        vk_pipeline_vertex_input_state_create_info.pVertexBindingDescriptions = nullptr;
+        vk_pipeline_vertex_input_state_create_info.vertexAttributeDescriptionCount = 0;
+        vk_pipeline_vertex_input_state_create_info.pVertexAttributeDescriptions = nullptr;
+
+        VkPipelineTessellationStateCreateInfo vk_pipeline_tessellation_state_create_info = {};
+        vk_pipeline_tessellation_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+        vk_pipeline_tessellation_state_create_info.pNext = nullptr;
+        vk_pipeline_tessellation_state_create_info.flags = 0;
+        vk_pipeline_tessellation_state_create_info.patchControlPoints = 0;
+
+        VkPipelineMultisampleStateCreateInfo vk_pipeline_multisample_state_create_info = {};
+        vk_pipeline_multisample_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+        vk_pipeline_multisample_state_create_info.pNext = nullptr;
+        vk_pipeline_multisample_state_create_info.flags = 0;
+        vk_pipeline_multisample_state_create_info.rasterizationSamples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+        vk_pipeline_multisample_state_create_info.sampleShadingEnable = VK_FALSE;
+        vk_pipeline_multisample_state_create_info.minSampleShading = 1;
+        vk_pipeline_multisample_state_create_info.pSampleMask = nullptr;
+        vk_pipeline_multisample_state_create_info.alphaToCoverageEnable = VK_FALSE;
+        vk_pipeline_multisample_state_create_info.alphaToOneEnable = VK_FALSE;
+
+        VkPipelineDepthStencilStateCreateInfo vk_pipeline_depth_stencil_state_create_info = {};
+        vk_pipeline_depth_stencil_state_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        vk_pipeline_depth_stencil_state_create_info.pNext = nullptr;
+        vk_pipeline_depth_stencil_state_create_info.flags = 0;
+        vk_pipeline_depth_stencil_state_create_info.depthTestEnable = VK_TRUE;
+        vk_pipeline_depth_stencil_state_create_info.depthWriteEnable = VK_TRUE;
+        vk_pipeline_depth_stencil_state_create_info.depthCompareOp = VkCompareOp::VK_COMPARE_OP_LESS_OR_EQUAL;
+        vk_pipeline_depth_stencil_state_create_info.depthBoundsTestEnable = VK_FALSE;
+        vk_pipeline_depth_stencil_state_create_info.stencilTestEnable = VK_FALSE;
+        vk_pipeline_depth_stencil_state_create_info.front = {};
+        vk_pipeline_depth_stencil_state_create_info.back = {};
+        vk_pipeline_depth_stencil_state_create_info.minDepthBounds = 0;
+        vk_pipeline_depth_stencil_state_create_info.maxDepthBounds = 0;
+
+        VkGraphicsPipelineCreateInfo vk_graphics_pipeline_create_info = {};
+        vk_graphics_pipeline_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        vk_graphics_pipeline_create_info.pNext = nullptr;
+        vk_graphics_pipeline_create_info.flags = 0;
+        vk_graphics_pipeline_create_info.stageCount = shader_stages.size();
+        vk_graphics_pipeline_create_info.pStages = shader_stages.data();
+        vk_graphics_pipeline_create_info.pVertexInputState = &vk_pipeline_vertex_input_state_create_info;
+        vk_graphics_pipeline_create_info.pInputAssemblyState = &vk_pipeline_input_assembly_state_create_info;
+        vk_graphics_pipeline_create_info.pTessellationState = &vk_pipeline_tessellation_state_create_info;
+        vk_graphics_pipeline_create_info.pViewportState = &vk_pipeline_viewport_state_create_info;
+        vk_graphics_pipeline_create_info.pRasterizationState = &vk_pipeline_rasterization_state_create_info;
+        vk_graphics_pipeline_create_info.pMultisampleState = &vk_pipeline_multisample_state_create_info;
+        vk_graphics_pipeline_create_info.pDepthStencilState = &vk_pipeline_depth_stencil_state_create_info;
+        vk_graphics_pipeline_create_info.pColorBlendState = &vk_pipeline_color_blend_state_create_info;
+        vk_graphics_pipeline_create_info.pDynamicState = &vk_pipeline_dynamic_state_create_info;
+        vk_graphics_pipeline_create_info.layout = this->pipelineLayout;
+        vk_graphics_pipeline_create_info.renderPass = this->renderPass;
+        vk_graphics_pipeline_create_info.subpass = 0;
+        vk_graphics_pipeline_create_info.basePipelineHandle = VK_NULL_HANDLE;
+        vk_graphics_pipeline_create_info.basePipelineIndex = 0;
+
+        VkResult pipeline_create_result = driver.vkCreateGraphicsPipelines(this->device, VK_NULL_HANDLE, 1, &vk_graphics_pipeline_create_info, nullptr, &this->pipeline);
+        if (pipeline_create_result != VkResult::VK_SUCCESS)
+        {
+#if defined(USE_HARMONY_OS_PLATFORM)
+            MyPrint("pipeline_create_result: %{public}u\n", pipeline_create_result);
+#else
+            MyPrint("pipeline_create_result: %o\n", pipeline_create_result);
+#endif
+            throw std::runtime_error("Can not create rendering pipeline!");
+        }
+
+        driver.vkDestroyShaderModule(this->device, my_fragment_shader_module, nullptr);
+        driver.vkDestroyShaderModule(this->device, my_vertex_shader_module, nullptr);
+    }
+}
+
+void VulkanTriangle::ResizeSurface(uint32_t width, uint32_t height)
+{
+    VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
+    driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+
+    if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
+    {
+        // TODO: not drawing
+        return;
+    }
+
+    this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
+    this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
+
+    {
+        for (auto &vk_frame_buffer : this->frameBuffers)
+        {
+            driver.vkDestroyFramebuffer(this->device, vk_frame_buffer, nullptr);
+        }
+        this->frameBuffers.clear();
+
+        for (auto &swapchain_image_view : this->swapchainImageViews)
+        {
+            driver.vkDestroyImageView(this->device, swapchain_image_view, nullptr);
+        }
+        this->swapchainImageViews.clear();
+        this->swapchainImages.clear();
+    }
+
+    VkSwapchainKHR old_swapchain = this->swapchain;
+    VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
+    vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    vk_swapchain_create_info_khr.pNext = nullptr;
+    vk_swapchain_create_info_khr.flags = 0;
+    vk_swapchain_create_info_khr.surface = this->surface;
+    vk_swapchain_create_info_khr.minImageCount = std::max(vk_surface_capabilities_khr.minImageCount, vk_surface_capabilities_khr.maxImageCount);
+    vk_swapchain_create_info_khr.imageFormat = this->targetSwapchainFormat;
+    vk_swapchain_create_info_khr.imageColorSpace = this->targetSwapchainColorSpace;
+    vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
+    vk_swapchain_create_info_khr.imageArrayLayers = 1;
+    vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    vk_swapchain_create_info_khr.imageSharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
+    vk_swapchain_create_info_khr.queueFamilyIndexCount = 0;
+    vk_swapchain_create_info_khr.pQueueFamilyIndices = nullptr;
+    vk_swapchain_create_info_khr.preTransform = vk_surface_capabilities_khr.currentTransform;
+    vk_swapchain_create_info_khr.compositeAlpha = VkCompositeAlphaFlagBitsKHR::VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    vk_swapchain_create_info_khr.presentMode = this->isSwapchainSupportFifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : this->presentModes[0];
+    vk_swapchain_create_info_khr.clipped = VK_TRUE;
+    vk_swapchain_create_info_khr.oldSwapchain = old_swapchain;
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("CreateSurface::swapchain extent: (with = %{public}u, height = %{public}u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#else
+    MyPrint("CreateSurface::swapchain extent: (with = %u, height = %u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#endif
+    driver.vkCreateSwapchainKHR(this->device, &vk_swapchain_create_info_khr, nullptr, &this->swapchain);
+    MyPrint("CreateSurface::vkCreateSwapchainKHR:");
+    PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
+
+    uint32_t swapchain_image_count = 0;
+    driver.vkGetSwapchainImagesKHR(this->device, this->swapchain, &swapchain_image_count, nullptr);
+    this->swapchainImages.resize(swapchain_image_count);
+    driver.vkGetSwapchainImagesKHR(this->device, this->swapchain, &swapchain_image_count, this->swapchainImages.data());
+
+    if (this->swapchainImages.empty())
+    {
+        throw std::runtime_error("Can not get swapchain images!");
+    }
+
+    this->swapchainImageViews.resize(swapchain_image_count);
+    for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchain_image_count; swapchain_image_view_index++)
+    {
+        VkImageViewCreateInfo vk_image_view_create_info = {};
+        vk_image_view_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        vk_image_view_create_info.pNext = nullptr;
+        vk_image_view_create_info.flags = 0;
+        vk_image_view_create_info.image = this->swapchainImages[swapchain_image_view_index];
+        vk_image_view_create_info.viewType = VkImageViewType ::VK_IMAGE_VIEW_TYPE_2D;
+        vk_image_view_create_info.format = this->targetSwapchainFormat;
+        vk_image_view_create_info.components.r = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_R;
+        vk_image_view_create_info.components.g = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_G;
+        vk_image_view_create_info.components.b = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_B;
+        vk_image_view_create_info.components.a = VkComponentSwizzle::VK_COMPONENT_SWIZZLE_A;
+        vk_image_view_create_info.subresourceRange.aspectMask = VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT;
+        vk_image_view_create_info.subresourceRange.baseMipLevel = 0;
+        vk_image_view_create_info.subresourceRange.levelCount = 1;
+        vk_image_view_create_info.subresourceRange.baseArrayLayer = 0;
+        vk_image_view_create_info.subresourceRange.layerCount = 1;
+
+        driver.vkCreateImageView(this->device, &vk_image_view_create_info, nullptr, &this->swapchainImageViews[swapchain_image_view_index]);
+    }
+
+    for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < this->swapchainImageViews.size(); swapchain_image_view_index++)
+    {
+        std::vector<VkImageView> frame_buffer;
+        frame_buffer.push_back(this->swapchainImageViews[swapchain_image_view_index]);
+
+        VkFramebufferCreateInfo vk_frame_buffer_create_info = {};
+        vk_frame_buffer_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        vk_frame_buffer_create_info.pNext = nullptr;
+        vk_frame_buffer_create_info.flags = 0;
+        vk_frame_buffer_create_info.renderPass = this->renderPass;
+        vk_frame_buffer_create_info.attachmentCount = frame_buffer.size();
+        vk_frame_buffer_create_info.pAttachments = frame_buffer.data();
+        vk_frame_buffer_create_info.width = vk_surface_capabilities_khr.currentExtent.width;
+        vk_frame_buffer_create_info.height = vk_surface_capabilities_khr.currentExtent.height;
+        vk_frame_buffer_create_info.layers = 1;
+
+        VkFramebuffer vk_frame_buffer = VK_NULL_HANDLE;
+        VkResult frame_buffer_create_result = driver.vkCreateFramebuffer(this->device, &vk_frame_buffer_create_info, nullptr, &vk_frame_buffer);
+        if (frame_buffer_create_result != VkResult::VK_SUCCESS)
+        {
+            throw std::runtime_error("Can not create Framebuffer!");
+        }
+
+        this->frameBuffers.push_back(vk_frame_buffer);
+    }
+}
+
+void VulkanTriangle::CreateSurface(void *window, uint32_t width, uint32_t height)
+{
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("VulkanTriangle::CreateSurface(width = %{public}u, height = %{public}u)\n", width, height);
+#else
+    MyPrint("VulkanTriangle::CreateSurface(width = %{public}u, height = %{public}u)\n", width, height);
+#endif
+    if (window == nullptr)
+    {
+        throw std::runtime_error("Can not get window when surface create!");
+    }
+
+#if defined(USE_WINDOWS_PLATFORM) || defined(USE_LINUX_PLATFORM)
+    glfwCreateWindowSurface(this->instance, (GLFWwindow *)window, NULL, &this->surface);
+#elif defined(USE_HARMONY_OS_PLATFORM)
+    driver.vkCreateSurfaceOHOS = (PFN_vkCreateSurfaceOHOS)driver.vkGetInstanceProcAddr(this->instance, "vkCreateSurfaceOHOS");
+    assert(driver.vkCreateSurfaceOHOS && "vkCreateSurfaceOHOS");
+
+    VkSurfaceCreateInfoOHOS vk_surface_create_info_ohos = {};
+    vk_surface_create_info_ohos.sType = VkStructureType::VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    vk_surface_create_info_ohos.pNext = nullptr;
+    vk_surface_create_info_ohos.flags = 0;
+    vk_surface_create_info_ohos.window = (OHNativeWindow *)window;
+
+    driver.vkCreateSurfaceOHOS(this->instance, &vk_surface_create_info_ohos, nullptr, &this->surface);
+    if (result == VkResult::VK_SUCCESS)
+    {
+        MyPrint("vkCreateSurfaceOHOS success\n");
+    }
+    else
+    {
+        MyPrint("[Error] vkCreateSurfaceOHOS failed!\n");
+    }
+#else
+    throw std::runtime_error("Not compatible with this platform!");
+#endif
+
+    driver.vkGetPhysicalDeviceSurfaceFormatsKHR = (PFN_vkGetPhysicalDeviceSurfaceFormatsKHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceSurfaceFormatsKHR");
+    assert(driver.vkGetPhysicalDeviceSurfaceFormatsKHR && "vkGetPhysicalDeviceSurfaceFormatsKHR");
+
+    driver.vkDestroySurfaceKHR = (PFN_vkDestroySurfaceKHR)driver.vkGetInstanceProcAddr(this->instance, "vkDestroySurfaceKHR");
+    assert(driver.vkDestroySurfaceKHR && "vkDestroySurfaceKHR");
+
+    driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR = (PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+    assert(driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR && "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+
+    driver.vkCreateSwapchainKHR = (PFN_vkCreateSwapchainKHR)driver.vkGetDeviceProcAddr(this->device, "vkCreateSwapchainKHR");
+    assert(driver.vkCreateSwapchainKHR && "vkCreateSwapchainKHR");
+
+    driver.vkDestroySwapchainKHR = (PFN_vkDestroySwapchainKHR)driver.vkGetDeviceProcAddr(this->device, "vkDestroySwapchainKHR");
+    assert(driver.vkDestroySwapchainKHR && "vkDestroySwapchainKHR");
+
+    VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
+    driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+    {
+        MyPrint("CreateSurface::vk_surface_capabilities_khr:");
+        PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.supportedTransforms);
+    }
+
+#if defined(USE_HARMONY_OS_PLATFORM) // NOTE:???
+    {
+        vk_surface_capabilities_khr.currentExtent.width = width;
+        vk_surface_capabilities_khr.currentExtent.height = height;
+    }
+#endif
 
     this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
     this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
@@ -721,7 +1413,11 @@ void VulkanTriangle::CreateSurface(void *window)
         throw std::runtime_error("Can not find a appropriate format for swapchain as color attachment!");
     }
 
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("swapchain use %{public}s format\n", to_string(this->targetSwapchainFormat).c_str());
+#else
     MyPrint("swapchain use %s format\n", to_string(this->targetSwapchainFormat).c_str());
+#endif
 
     VkSwapchainCreateInfoKHR vk_swapchain_create_info_khr = {};
     vk_swapchain_create_info_khr.sType = VkStructureType::VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -742,9 +1438,14 @@ void VulkanTriangle::CreateSurface(void *window)
     vk_swapchain_create_info_khr.presentMode = this->isSwapchainSupportFifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : this->presentModes[0];
     vk_swapchain_create_info_khr.clipped = VK_TRUE;
     vk_swapchain_create_info_khr.oldSwapchain = VK_NULL_HANDLE;
-
+#if defined(USE_HARMONY_OS_PLATFORM)
+    MyPrint("CreateSurface::swapchain extent: (with = %{public}u, height = %{public}u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#else
+    MyPrint("CreateSurface::swapchain extent: (with = %u, height = %u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#endif
     driver.vkCreateSwapchainKHR(this->device, &vk_swapchain_create_info_khr, nullptr, &this->swapchain);
-
+    MyPrint("CreateSurface::vkCreateSwapchainKHR:");
+    PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
     driver.vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)driver.vkGetDeviceProcAddr(this->device, "vkGetSwapchainImagesKHR");
     assert(driver.vkGetSwapchainImagesKHR && "vkGetSwapchainImagesKHR");
 
@@ -808,48 +1509,48 @@ void VulkanTriangle::CreateSurface(void *window)
     }
 
     {
-        std::vector<VkDescriptorPoolSize> vk_descriptor_pool_sizes = {};
-        {
-            VkDescriptorPoolSize vk_descriptor_pool_size;
-            vk_descriptor_pool_size.descriptorCount = 1000;
-
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-            vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-            vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        }
-
-        VkDescriptorPoolCreateInfo vk_descriptor_pool_create_info = {};
-        vk_descriptor_pool_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        vk_descriptor_pool_create_info.pNext = nullptr;
-        vk_descriptor_pool_create_info.flags = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        vk_descriptor_pool_create_info.maxSets = vk_descriptor_pool_sizes.size() * 1000;
-        vk_descriptor_pool_create_info.poolSizeCount = vk_descriptor_pool_sizes.size();
-        vk_descriptor_pool_create_info.pPoolSizes = vk_descriptor_pool_sizes.data();
-
-        VkResult result = driver.vkCreateDescriptorPool(this->device, &vk_descriptor_pool_create_info, nullptr, &this->descriptorPool);
-        if (result != VkResult::VK_SUCCESS)
-        {
-            throw std::runtime_error("Can not create VkDescriptorPool!");
-        }
+        // std::vector<VkDescriptorPoolSize> vk_descriptor_pool_sizes = {};
+        //{
+        //     VkDescriptorPoolSize vk_descriptor_pool_size;
+        //     vk_descriptor_pool_size.descriptorCount = 1000;
+        //
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
+        //}
+        //
+        // VkDescriptorPoolCreateInfo vk_descriptor_pool_create_info = {};
+        // vk_descriptor_pool_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        // vk_descriptor_pool_create_info.pNext = nullptr;
+        // vk_descriptor_pool_create_info.flags = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        // vk_descriptor_pool_create_info.maxSets = vk_descriptor_pool_sizes.size() * 1000;
+        // vk_descriptor_pool_create_info.poolSizeCount = vk_descriptor_pool_sizes.size();
+        // vk_descriptor_pool_create_info.pPoolSizes = vk_descriptor_pool_sizes.data();
+        //
+        // VkResult result = driver.vkCreateDescriptorPool(this->device, &vk_descriptor_pool_create_info, nullptr, &this->descriptorPool);
+        // if (result != VkResult::VK_SUCCESS)
+        //{
+        //    throw std::runtime_error("Can not create VkDescriptorPool!");
+        //}
     }
 
     VkAttachmentReference color_attachment = {};
@@ -1084,7 +1785,11 @@ void VulkanTriangle::CreateSurface(void *window)
     VkResult pipeline_create_result = driver.vkCreateGraphicsPipelines(this->device, VK_NULL_HANDLE, 1, &vk_graphics_pipeline_create_info, nullptr, &this->pipeline);
     if (pipeline_create_result != VkResult::VK_SUCCESS)
     {
+#if defined(USE_HARMONY_OS_PLATFORM)
+        MyPrint("pipeline_create_result: %{public}u\n", pipeline_create_result);
+#else
         MyPrint("pipeline_create_result: %o\n", pipeline_create_result);
+#endif
         throw std::runtime_error("Can not create rendering pipeline!");
     }
 
@@ -1116,6 +1821,7 @@ void VulkanTriangle::CreateSurface(void *window)
 
         this->frameBuffers.push_back(vk_frame_buffer);
     }
+    MyPrint("[CreateSurface] END\n");
 }
 
 void VulkanTriangle::Draw(float time)
@@ -1155,8 +1861,12 @@ void VulkanTriangle::Draw(float time)
 
         VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
         driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
+#if defined(USE_HARMONY_OS_PLATFORM)
+        MyPrint("new (width = %{public}u, height = %{public}u)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.height);
 
-        MyPrint("new (width = %g, height = %g)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.height);
+#else
+        MyPrint("new (width = %u, height = %u)\n", vk_surface_capabilities_khr.currentExtent.width, vk_surface_capabilities_khr.currentExtent.height);
+#endif
 
         if (vk_surface_capabilities_khr.currentExtent.width == 0 || vk_surface_capabilities_khr.currentExtent.height == 0)
         {
@@ -1199,8 +1909,17 @@ void VulkanTriangle::Draw(float time)
             vk_swapchain_create_info_khr.presentMode = this->isSwapchainSupportFifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : this->presentModes[0];
             vk_swapchain_create_info_khr.clipped = VK_TRUE;
             vk_swapchain_create_info_khr.oldSwapchain = old_swapchain;
-
+#if defined(USE_HARMONY_OS_PLATFORM)
+            MyPrint("Draw::swapchain extent: (with = %{public}u, height = %{public}u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#else
+            MyPrint("Draw::swapchain extent: (with = %u, height = %u)\n", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
+#endif
             VkResult new_create_swapchain_result = driver.vkCreateSwapchainKHR(this->device, &vk_swapchain_create_info_khr, nullptr, &this->swapchain);
+
+            {
+                MyPrint("Draw::vkCreateSwapchainKHR:");
+                PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
+            }
 
             if (new_create_swapchain_result == VkResult::VK_SUCCESS)
             {
@@ -1209,6 +1928,15 @@ void VulkanTriangle::Draw(float time)
 
                 this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
                 this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
+                MyPrint("Draw::vkCreateSwapchainKHR::SUCCESS\n");
+            }
+            else
+            {
+#if defined(USE_HARMONY_OS_PLATFORM)
+                MyPrint("[Alarm] Draw::vkCreateSwapchainKHR::%{public}u\n", new_create_swapchain_result);
+#else
+                MyPrint("[Alarm] Draw::vkCreateSwapchainKHR::%u\n", new_create_swapchain_result);
+#endif
             }
 
             uint32_t swapchain_image_count = 0;
@@ -1393,6 +2121,8 @@ void VulkanTriangle::Draw(float time)
 #if defined(USE_WINDOWS_PLATFORM) || defined(USE_LINUX_PLATFORM)
 int main()
 {
+    VulkanTriangle vulkan_triangle;
+
     if (!glfwInit())
     {
         throw std::runtime_error("Can not init glfw!");
@@ -1405,8 +2135,17 @@ int main()
 
     window = glfwCreateWindow(window_width, window_height, "VulkanTriangle", NULL, NULL);
 
-    VulkanTriangle vulkan_triangle;
+    glfwSetWindowUserPointer(window, &vulkan_triangle);
+
+    glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int width, int height) {
+        std::cout << "glfwSetWindowSizeCallback: width: " << width << ", height" << height << std::endl;
+        // vulkan_triangle.ResizeSurface(width, height);
+        auto vulkan_triangle = (VulkanTriangle *)glfwGetWindowUserPointer(window);
+        vulkan_triangle->ResizeSurface(width, height);
+    });
+
     vulkan_triangle.CreateSurface(window);
+    vulkan_triangle.ResizeSurface(window_width, window_height);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();

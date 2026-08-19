@@ -30,7 +30,7 @@ void MyPrint(const std::string& format, Args... args) {
 */
 
 #if defined(USE_HARMONY_OS_PLATFORM)
-#define MyPrint(fmt, ...)  OH_LOG_Print(LOG_APP, LOG_INFO, 0x1, "VulkanTriangle", fmt, ##__VA_ARGS__);
+#define MyPrint(fmt, ...) OH_LOG_Print(LOG_APP, LOG_INFO, 0x1, "VulkanTriangle", fmt, ##__VA_ARGS__);
 #else
 #define MyPrint(fmt, ...) vprintf(fmt, ##__VA_ARGS__);
 #endif
@@ -39,29 +39,83 @@ void PrintVkSurfaceTransformFlagBitsKHR(VkSurfaceTransformFlagBitsKHR stfb)
 {
     switch (stfb)
     {
-    case VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR");}break;
-    case VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR:{MyPrint("VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR");}break;
+    case VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR");
+    }
+    break;
+    case VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR: {
+        MyPrint("VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR");
+    }
+    break;
     }
 }
 
 void PrintVkSurfaceTransformFlagsKHR(VkSurfaceTransformFlagsKHR stf)
 {
-    if((stf&VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)==VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR)==VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR)==VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR)==VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR)==VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR)==VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR)==VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR)==VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR);}
-    if((stf&VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR)==VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR){PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR);}
+    if ((stf & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR) == VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR);
+    }
+    if ((stf & VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR) == VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR)
+    {
+        PrintVkSurfaceTransformFlagBitsKHR(VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR);
+    }
 }
 
 static const uint32_t MY_VERT_SHADER_BIN[] = {0x07230203, 0x00010000, 0x000d000b, 0x0000004d, 0x00000000, 0x00020011, 0x00000001, 0x0006000b, 0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001, 0x0008000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x00000017, 0x00000021, 0x0000003b, 0x00050048, 0x00000009, 0x00000000, 0x00000023, 0x00000000, 0x00030047, 0x00000009, 0x00000002, 0x00040047, 0x00000017, 0x0000000b, 0x0000002a, 0x00040047, 0x00000021, 0x0000001e, 0x00000000, 0x00050048, 0x00000039, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x00000039, 0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x00000039, 0x00000002, 0x0000000b, 0x00000003, 0x00050048, 0x00000039, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x00000039, 0x00000002, 0x00020013, 0x00000002, 0x00030021, 0x00000003, 0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x0003001e, 0x00000009, 0x00000006, 0x00040020, 0x0000000a, 0x00000009, 0x00000009, 0x0004003b, 0x0000000a, 0x0000000b, 0x00000009, 0x00040015, 0x0000000c, 0x00000020, 0x00000001, 0x0004002b, 0x0000000c, 0x0000000d, 0x00000000, 0x00040020, 0x0000000e, 0x00000009, 0x00000006, 0x00040017, 0x00000011, 0x00000006, 0x00000002, 0x0004002b, 0x00000006, 0x00000014, 0x00000000, 0x0005002c, 0x00000011, 0x00000015, 0x00000014, 0x00000014, 0x00040020, 0x00000016, 0x00000001, 0x0000000c, 0x0004003b, 0x00000016, 0x00000017, 0x00000001, 0x00020014, 0x00000019, 0x0004002b, 0x00000006, 0x0000001d, 0xbf000000, 0x0005002c, 0x00000011, 0x0000001e, 0x00000014, 0x0000001d, 0x00040017, 0x0000001f, 0x00000006, 0x00000003, 0x00040020, 0x00000020, 0x00000003, 0x0000001f, 0x0004003b, 0x00000020, 0x00000021, 0x00000003, 0x0004002b, 0x00000006, 0x00000022, 0x3f800000, 0x0006002c, 0x0000001f, 0x00000023, 0x00000022, 0x00000014, 0x00000014, 0x0004002b, 0x0000000c, 0x00000026, 0x00000001, 0x0004002b, 0x00000006, 0x0000002a, 0x3f000000, 0x0005002c, 0x00000011, 0x0000002b, 0x0000002a, 0x0000002a, 0x0006002c, 0x0000001f, 0x0000002c, 0x00000014, 0x00000022, 0x00000014, 0x0004002b, 0x0000000c, 0x0000002f, 0x00000002, 0x0005002c, 0x00000011, 0x00000033, 0x0000001d, 0x0000002a, 0x0006002c, 0x0000001f, 0x00000034, 0x00000014, 0x00000014, 0x00000022, 0x00040017, 0x00000035, 0x00000006, 0x00000004, 0x00040015, 0x00000036, 0x00000020, 0x00000000, 0x0004002b, 0x00000036, 0x00000037, 0x00000001, 0x0004001c, 0x00000038, 0x00000006, 0x00000037, 0x0006001e, 0x00000039, 0x00000035, 0x00000006, 0x00000038, 0x00000038, 0x00040020, 0x0000003a, 0x00000003, 0x00000039, 0x0004003b, 0x0000003a, 0x0000003b, 0x00000003, 0x00040020, 0x00000042, 0x00000003, 0x00000035, 0x00040017, 0x0000004a, 0x00000019, 0x00000002, 0x00050036, 0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x00050041, 0x0000000e, 0x0000000f, 0x0000000b, 0x0000000d, 0x0004003d, 0x00000006, 0x00000010, 0x0000000f, 0x0004003d, 0x0000000c, 0x00000018, 0x00000017, 0x000500aa, 0x00000019, 0x0000001a, 0x00000018, 0x0000000d, 0x000300f7, 0x0000001c, 0x00000000, 0x000400fa, 0x0000001a, 0x0000001b, 0x00000024, 0x000200f8, 0x0000001b, 0x0003003e, 0x00000021, 0x00000023, 0x000200f9, 0x0000001c, 0x000200f8, 0x00000024, 0x000500aa, 0x00000019, 0x00000027, 0x00000018, 0x00000026, 0x000300f7, 0x00000029, 0x00000000, 0x000400fa, 0x00000027, 0x00000028, 0x0000002d, 0x000200f8, 0x00000028, 0x0003003e, 0x00000021, 0x0000002c, 0x000200f9, 0x00000029, 0x000200f8, 0x0000002d, 0x000500aa, 0x00000019, 0x00000030, 0x00000018, 0x0000002f, 0x000300f7, 0x00000032, 0x00000000, 0x000400fa, 0x00000030, 0x00000031, 0x00000032, 0x000200f8, 0x00000031, 0x0003003e, 0x00000021, 0x00000034, 0x000200f9, 0x00000032, 0x000200f8, 0x00000032, 0x00050050, 0x0000004a, 0x0000004b, 0x00000030, 0x00000030, 0x000600a9, 0x00000011, 0x0000004c, 0x0000004b, 0x00000033, 0x00000015, 0x000200f9, 0x00000029, 0x000200f8, 0x00000029, 0x000700f5, 0x00000011, 0x00000045, 0x0000002b, 0x00000028, 0x0000004c, 0x00000032, 0x000200f9, 0x0000001c, 0x000200f8, 0x0000001c, 0x000700f5, 0x00000011, 0x00000044, 0x0000001e, 0x0000001b, 0x00000045, 0x00000029, 0x0005008e, 0x00000011, 0x0000003e, 0x00000044, 0x00000010, 0x00050051, 0x00000006, 0x0000003f, 0x0000003e, 0x00000000, 0x00050051, 0x00000006, 0x00000040, 0x0000003e, 0x00000001, 0x00070050, 0x00000035, 0x00000041, 0x0000003f, 0x00000040, 0x00000014, 0x00000022, 0x00050041, 0x00000042, 0x00000043, 0x0000003b, 0x0000000d, 0x0003003e, 0x00000043, 0x00000041, 0x000100fd, 0x00010038};
@@ -70,7 +124,7 @@ static const uint32_t MY_FRAG_SHADER_BIN[] = {0x07230203, 0x00010000, 0x0008000b
 
 VulkanTriangle::VulkanTriangle()
 {
-    MyPrint("Hello VulkanTriangle  %{public}s",u8"This is test str");
+    MyPrint("Hello VulkanTriangle  %{public}s", u8"This is test str");
 #if defined(USE_WINDOWS_PLATFORM)
     HMODULE library = LoadLibraryA("vulkan-1.dll");
     if (!library)
@@ -142,11 +196,11 @@ VulkanTriangle::VulkanTriangle()
         assert(support_vulkan_version && "Not support Vulkan!");
     }
 
-    //auto version_major = VK_VERSION_MAJOR(support_vulkan_version);
+    // auto version_major = VK_VERSION_MAJOR(support_vulkan_version);
     auto version_major = VK_API_VERSION_MAJOR(support_vulkan_version);
-    //auto version_minor = VK_VERSION_MINOR(support_vulkan_version);
+    // auto version_minor = VK_VERSION_MINOR(support_vulkan_version);
     auto version_minor = VK_API_VERSION_MINOR(support_vulkan_version);
-    //auto version_patch = VK_VERSION_PATCH(support_vulkan_version);
+    // auto version_patch = VK_VERSION_PATCH(support_vulkan_version);
     auto version_patch = VK_API_VERSION_PATCH(support_vulkan_version);
 
     MyPrint("Support Vulkan: %{public}u.%{public}u.%{public}u\n", version_major, version_minor, version_patch);
@@ -169,7 +223,7 @@ VulkanTriangle::VulkanTriangle()
     vk_application_info.applicationVersion = 0;
     vk_application_info.pEngineName = nullptr;
     vk_application_info.engineVersion = 0;
-    //vk_application_info.apiVersion = support_vulkan_version;
+    // vk_application_info.apiVersion = support_vulkan_version;
     vk_application_info.apiVersion = VK_API_VERSION_1_0;
 
     std::vector<std::string> enable_instance_layers;
@@ -691,9 +745,9 @@ VulkanTriangle::~VulkanTriangle()
     MyPrint("vkDestroyInstance success\n");
 }
 
-void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
+void VulkanTriangle::CreateSurface(void *window, uint32_t width, uint32_t height)
 {
-    MyPrint("VulkanTriangle::CreateSurface(width = %{public}u, height = %{public}u)\n",width,height);
+    MyPrint("VulkanTriangle::CreateSurface(width = %{public}u, height = %{public}u)\n", width, height);
     if (window == nullptr)
     {
         throw std::runtime_error("Can not get window when surface create!");
@@ -711,12 +765,14 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
     vk_surface_create_info_ohos.flags = 0;
     vk_surface_create_info_ohos.window = (OHNativeWindow *)window;
 
-   VkResult result= driver.vkCreateSurfaceOHOS(this->instance, &vk_surface_create_info_ohos, nullptr, &this->surface);
-    if(result==VkResult::VK_SUCCESS)
+    VkResult result = driver.vkCreateSurfaceOHOS(this->instance, &vk_surface_create_info_ohos, nullptr, &this->surface);
+    if (result == VkResult::VK_SUCCESS)
     {
         MyPrint("vkCreateSurfaceOHOS success\n");
-    } else{
-                MyPrint("[Error] vkCreateSurfaceOHOS failed!\n");
+    }
+    else
+    {
+        MyPrint("[Error] vkCreateSurfaceOHOS failed!\n");
     }
 #else
     throw std::runtime_error("Not compatible with this platform!");
@@ -739,15 +795,15 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
 
     VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
     driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
-{
+    {
         MyPrint("CreateSurface::vk_surface_capabilities_khr:");
         PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.supportedTransforms);
-}
-    
-{
-       vk_surface_capabilities_khr.currentExtent.width= width;
-       vk_surface_capabilities_khr.currentExtent.height= height;
-}
+    }
+
+    {
+        vk_surface_capabilities_khr.currentExtent.width = width;
+        vk_surface_capabilities_khr.currentExtent.height = height;
+    }
 
     this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
     this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
@@ -804,7 +860,7 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
     vk_swapchain_create_info_khr.imageFormat = this->targetSwapchainFormat;
     vk_swapchain_create_info_khr.imageColorSpace = this->targetSwapchainColorSpace;
     vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.currentExtent;
-    //vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.minImageExtent;
+    // vk_swapchain_create_info_khr.imageExtent = vk_surface_capabilities_khr.minImageExtent;
     vk_swapchain_create_info_khr.imageArrayLayers = 1;
     vk_swapchain_create_info_khr.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
     vk_swapchain_create_info_khr.imageSharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
@@ -815,12 +871,12 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
     vk_swapchain_create_info_khr.presentMode = this->isSwapchainSupportFifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : this->presentModes[0];
     vk_swapchain_create_info_khr.clipped = VK_TRUE;
     vk_swapchain_create_info_khr.oldSwapchain = VK_NULL_HANDLE;
-    MyPrint("CreateSurface::swapchain extent: (with = %{public}u, height = %{public}u)",vk_swapchain_create_info_khr.imageExtent.width,vk_swapchain_create_info_khr.imageExtent.height);
+    MyPrint("CreateSurface::swapchain extent: (with = %{public}u, height = %{public}u)", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
     driver.vkCreateSwapchainKHR(this->device, &vk_swapchain_create_info_khr, nullptr, &this->swapchain);
     {
         MyPrint("CreateSurface::vkCreateSwapchainKHR:");
         PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
-}
+    }
 
     driver.vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)driver.vkGetDeviceProcAddr(this->device, "vkGetSwapchainImagesKHR");
     assert(driver.vkGetSwapchainImagesKHR && "vkGetSwapchainImagesKHR");
@@ -833,12 +889,12 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
     MyPrint("0.1.2");
     driver.vkGetSwapchainImagesKHR(this->device, this->swapchain, &swapchain_image_count, this->swapchainImages.data());
     MyPrint("0.1.3");
-    
+
     MyPrint("0.1");
     if (this->swapchainImages.empty())
     {
-    MyPrint("0.1.4");
-        
+        MyPrint("0.1.4");
+
         throw std::runtime_error("Can not get swapchain images!");
     }
     MyPrint("1");
@@ -1200,7 +1256,7 @@ void VulkanTriangle::CreateSurface(void *window,uint32_t width, uint32_t height)
 
         this->frameBuffers.push_back(vk_frame_buffer);
     }
-    
+
     MyPrint("[CreateSurface] END");
 }
 
@@ -1212,17 +1268,17 @@ void VulkanTriangle::Draw(float time)
     // const std::chrono::duration<float> delta = current_point - previous_point;
     // previous_point = current_point;
     // game_time += delta.count();
-    
-    //MyPrint("time = %{public}f",time);
-    if((int)time%5==0)
+
+    // MyPrint("time = %{public}f",time);
+    if ((int)time % 5 == 0)
     {
         VkSurfaceCapabilitiesKHR vk_surface_capabilities_khr = {};
         driver.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->targetPhysicalDevice, this->surface, &vk_surface_capabilities_khr);
         {
-            static size_t index=0;
-            //MyPrint("%{public}u Draw::vk_surface_capabilities_khr:Support Transform:",index);
-            //PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.supportedTransforms);
-            MyPrint("%{public}u Draw::vk_surface_capabilities_khr:Current Transform:",index);
+            static size_t index = 0;
+            // MyPrint("%{public}u Draw::vk_surface_capabilities_khr:Support Transform:",index);
+            // PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.supportedTransforms);
+            MyPrint("%{public}u Draw::vk_surface_capabilities_khr:Current Transform:", index);
             PrintVkSurfaceTransformFlagsKHR(vk_surface_capabilities_khr.currentTransform);
             MyPrint("\n");
             index++;
@@ -1302,12 +1358,12 @@ void VulkanTriangle::Draw(float time)
             vk_swapchain_create_info_khr.presentMode = this->isSwapchainSupportFifo ? VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR : this->presentModes[0];
             vk_swapchain_create_info_khr.clipped = VK_TRUE;
             vk_swapchain_create_info_khr.oldSwapchain = old_swapchain;
-            MyPrint("Draw::swapchain extent: (with = %{public}u, height = %{public}u)",vk_swapchain_create_info_khr.imageExtent.width,vk_swapchain_create_info_khr.imageExtent.height);
+            MyPrint("Draw::swapchain extent: (with = %{public}u, height = %{public}u)", vk_swapchain_create_info_khr.imageExtent.width, vk_swapchain_create_info_khr.imageExtent.height);
             VkResult new_create_swapchain_result = driver.vkCreateSwapchainKHR(this->device, &vk_swapchain_create_info_khr, nullptr, &this->swapchain);
-    {
-        MyPrint("Draw::vkCreateSwapchainKHR:");
-        PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
-}
+            {
+                MyPrint("Draw::vkCreateSwapchainKHR:");
+                PrintVkSurfaceTransformFlagsKHR(vk_swapchain_create_info_khr.preTransform);
+            }
             if (new_create_swapchain_result == VkResult::VK_SUCCESS)
             {
                 driver.vkDestroySwapchainKHR(this->device, vk_swapchain_create_info_khr.oldSwapchain, nullptr);
@@ -1315,13 +1371,13 @@ void VulkanTriangle::Draw(float time)
 
                 this->surfaceWidth = vk_surface_capabilities_khr.currentExtent.width;
                 this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
-                
+
                 MyPrint("Draw::vkCreateSwapchainKHR::SUCCESS");
-            } 
-        else
+            }
+            else
             {
-                MyPrint("[Alarm] Draw::vkCreateSwapchainKHR::%{public}u",new_create_swapchain_result);
-                //MyPrint("Support Vulkan: .%{public}u.%{public}u\n", version_major, version_minor, version_patch);
+                MyPrint("[Alarm] Draw::vkCreateSwapchainKHR::%{public}u", new_create_swapchain_result);
+                // MyPrint("Support Vulkan: .%{public}u.%{public}u\n", version_major, version_minor, version_patch);
             }
 
             uint32_t swapchain_image_count = 0;
@@ -1519,7 +1575,7 @@ int main()
     window = glfwCreateWindow(window_width, window_height, "VulkanTriangle", NULL, NULL);
 
     VulkanTriangle vulkan_triangle;
-    vulkan_triangle.CreateSurface(window);
+    vulkan_triangle.CreateSurface(window,);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
