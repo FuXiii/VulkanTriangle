@@ -38,6 +38,8 @@
 >
 > >优化调用顺序，增加 `void ResizeSurface(uint32_t width, uint32_t height)` 成员函数。
 >
+> >移除 `void CreateSurface(void *window, uint32_t width, uint32_t height)` 成员函数。
+>
 
 > **2026/5/29**
 >
