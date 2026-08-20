@@ -55,6 +55,10 @@ void PrintVkSurfaceTransformFlagBitsKHR(VkSurfaceTransformFlagBitsKHR stfb)
         MyPrint("VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR\n");
     }
     break;
+    case VK_SURFACE_TRANSFORM_FLAG_BITS_MAX_ENUM_KHR: {
+        // NOTE: Do nothing
+    }
+    break;
     }
 }
 
@@ -1505,7 +1509,7 @@ void VulkanTriangle::Draw(float time)
     {
         vk_command_buffer_begin_info.sType = VkStructureType::VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         vk_command_buffer_begin_info.pNext = nullptr;
-        vk_command_buffer_begin_info.flags = 0;
+        vk_command_buffer_begin_info.flags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
         vk_command_buffer_begin_info.pInheritanceInfo = nullptr;
     }
 
