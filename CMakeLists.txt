@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(VULKAN_TRIANGLE_SOURCE_FILE ./VulkanTriangle.h ./VulkanTriangle.cpp VkString.cpp)
+set(VULKAN_TRIANGLE_DYNAMIC_RENDERING_SOURCE_FILE ./VulkanTriangleDynamicRendering.h ./VulkanTriangleDynamicRendering.cpp VkString.cpp)
 
 if(OHOS)
   # -D OHOS_VERSION=4 (HarmonyOS 4 use API 10 begain support Vulkan)
@@ -47,18 +48,28 @@ if(OHOS)
     PUBLIC native_window
   )
 else()
-  #add_executable(${PROJECT_NAME} ./main.cpp VkString.cpp)
-  #add_executable(${PROJECT_NAME} ./VulkanTriangle.h ./VulkanTriangle.cpp VkString.cpp)
-  add_executable(${PROJECT_NAME} ${VULKAN_TRIANGLE_SOURCE_FILE})
   add_subdirectory(./thirdparty)
-  add_dependencies(${PROJECT_NAME} glfw)
 
+  add_executable(${PROJECT_NAME} ${VULKAN_TRIANGLE_SOURCE_FILE})
+  add_dependencies(${PROJECT_NAME} glfw)
   target_link_libraries(${PROJECT_NAME} 
+    PUBLIC glfw
+  )
+
+  add_executable(VulkanTriangleDynamicRendering ${VULKAN_TRIANGLE_DYNAMIC_RENDERING_SOURCE_FILE})
+  add_dependencies(VulkanTriangleDynamicRendering glfw)
+  target_link_libraries(VulkanTriangleDynamicRendering
     PUBLIC glfw
   )
 endif()
 
 target_include_directories(${PROJECT_NAME}
+    PUBLIC ./
+    PUBLIC ./include
+    PUBLIC ./thirdparty/glm/
+)
+
+target_include_directories(VulkanTriangleDynamicRendering
     PUBLIC ./
     PUBLIC ./include
     PUBLIC ./thirdparty/glm/

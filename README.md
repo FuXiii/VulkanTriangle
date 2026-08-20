@@ -34,6 +34,11 @@
 
 ### 日志
 
+> **2026/8/20**
+>
+> >增加 `VulkanTriangleDynamicRendering` 计划使用动态渲染( `DynamicRendering` )绘制三角形。
+>
+
 > **2026/8/19**
 >
 > >优化调用顺序，增加 `void ResizeSurface(uint32_t width, uint32_t height)` 成员函数。
