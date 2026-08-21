@@ -310,6 +310,7 @@ VulkanTriangle::VulkanTriangle()
     vk_application_info.pEngineName = nullptr;
     vk_application_info.engineVersion = 0;
     vk_application_info.apiVersion = support_vulkan_version; // NOTE:??? Need check it when OHOS use VK_API_VERSION_1_0 maybe a mistake
+    this->apiVersion = vk_application_info.apiVersion;
 
     std::vector<std::string> enable_instance_layers;
     {
@@ -399,11 +400,44 @@ VulkanTriangle::VulkanTriangle()
             throw std::runtime_error("Surface Not compatible with this platform!");
 #endif
         }
-    }
 
-    if (enabled_instance_extensions.empty())
-    {
-        throw std::runtime_error("Can not find Surface extension support!");
+        if (enabled_instance_extensions.empty())
+        {
+            throw std::runtime_error("Can not find Surface extension support!");
+        }
+
+        {
+            bool is_support_physical_device_properties2 = false;
+            // NOTE: check for get_physical_device_properties2 extension support
+            if (VK_API_VERSION_MINOR(this->apiVersion) < 1)
+            {
+                for (auto &extension_property : extension_properties)
+                {
+                    if (!is_support_physical_device_properties2)
+                    {
+                        if (std::string(extension_property.extensionName) == std::string(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) // "VK_KHR_get_physical_device_properties2"
+                        {
+                            is_support_physical_device_properties2 = true;
+                            enabled_instance_extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+                            this->driver.isGetPhysicalDeviceProperties2UseExtension = true;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                is_support_physical_device_properties2 = true;
+            }
+
+            if (!is_support_physical_device_properties2)
+            {
+                throw std::runtime_error("Current Vulkan instance can't support physical_device_properties2!");
+            }
+        }
     }
 
     std::vector<const char *> instance_enabled_extensions;
@@ -430,7 +464,6 @@ VulkanTriangle::VulkanTriangle()
     else
     {
         MyPrint("vkCreateInstance success\n");
-        this->apiVersion = vk_application_info.apiVersion;
     }
 
     driver.vkDestroyInstance = (PFN_vkDestroyInstance)driver.vkGetInstanceProcAddr(this->instance, "vkDestroyInstance");
@@ -462,6 +495,17 @@ VulkanTriangle::VulkanTriangle()
 
     driver.vkGetPhysicalDeviceMemoryProperties = (PFN_vkGetPhysicalDeviceMemoryProperties)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceMemoryProperties");
     assert(driver.vkGetPhysicalDeviceMemoryProperties && "vkGetPhysicalDeviceMemoryProperties");
+
+    if (driver.isGetPhysicalDeviceProperties2UseExtension)
+    {
+        driver.vkGetPhysicalDeviceFeatures2KHR = (PFN_vkGetPhysicalDeviceFeatures2KHR)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceFeatures2KHR");
+        assert(driver.vkGetPhysicalDeviceFeatures2KHR && "vkGetPhysicalDeviceFeatures2KHR");
+    }
+    else
+    {
+        driver.vkGetPhysicalDeviceFeatures2 = (PFN_vkGetPhysicalDeviceFeatures2)driver.vkGetInstanceProcAddr(this->instance, "vkGetPhysicalDeviceFeatures2");
+        assert(driver.vkGetPhysicalDeviceFeatures2 && "vkGetPhysicalDeviceFeatures2");
+    }
 
     uint32_t physcial_device_count = 0;
     result = driver.vkEnumeratePhysicalDevices(this->instance, &physcial_device_count, nullptr);
@@ -509,10 +553,10 @@ VulkanTriangle::VulkanTriangle()
             std::vector<VkExtensionProperties> extension_properties(device_extension_count);
             driver.vkEnumerateDeviceExtensionProperties(this->targetPhysicalDevice, nullptr, &device_extension_count, extension_properties.data());
 
+            bool is_support_dynamic_rendering = false;
             if (instance_version_minor < 3 && physical_device_version_minor < 3)
             {
-                // NOTE: check for dynamic rendering extension
-                bool is_support_dynamic_rendering = false;
+                // NOTE: check for dynamic rendering extension support
                 for (auto &extension_property : extension_properties)
                 {
                     if (!is_support_dynamic_rendering)
@@ -520,18 +564,35 @@ VulkanTriangle::VulkanTriangle()
                         if (std::string(extension_property.extensionName) == std::string(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME)) // "VK_KHR_dynamic_rendering"
                         {
                             is_support_dynamic_rendering = true;
+                            this->driver.isDynamicRenderingUseExtension = true;
                         }
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
+            else
+            {
+                is_support_dynamic_rendering = true;
+                this->driver.isDynamicRenderingUseExtension = false;
+            }
 
-            break;
+            if (!is_support_dynamic_rendering)
+            {
+                this->targetPhysicalDevice = VK_NULL_HANDLE;
+            }
+            else
+            {
+                break;
+            }
         }
     }
 
     if (this->targetPhysicalDevice == VK_NULL_HANDLE)
     {
-        throw std::runtime_error("Not found suitable GPU!");
+        throw std::runtime_error("Not found suitable GPU for dynamic rendering!");
     }
     else
     {
@@ -540,6 +601,32 @@ VulkanTriangle::VulkanTriangle()
 #else
         MyPrint("Select Physical Device: %s\n", target_physical_device_name.c_str());
 #endif
+        // TODO: Check dynamic rendering feature!
+        {
+            VkPhysicalDeviceDynamicRenderingFeatures vk_physical_device_dynamic_rendering_features = {};
+            vk_physical_device_dynamic_rendering_features.sType = VkStructureType::VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES;
+            vk_physical_device_dynamic_rendering_features.pNext = nullptr;
+            vk_physical_device_dynamic_rendering_features.dynamicRendering = VK_FALSE;
+
+            VkPhysicalDeviceFeatures2 vk_physical_device_features2;
+            vk_physical_device_features2.sType = VkStructureType::VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+            vk_physical_device_features2.pNext = &vk_physical_device_dynamic_rendering_features;
+            vk_physical_device_features2.features = {};
+
+            if (this->driver.isGetPhysicalDeviceProperties2UseExtension)
+            {
+                this->driver.vkGetPhysicalDeviceFeatures2KHR(this->targetPhysicalDevice, &vk_physical_device_features2);
+            }
+            else
+            {
+                this->driver.vkGetPhysicalDeviceFeatures2(this->targetPhysicalDevice, &vk_physical_device_features2);
+            }
+
+            if (vk_physical_device_dynamic_rendering_features.dynamicRendering != VK_TRUE)
+            {
+                throw std::runtime_error("target GPU don't support dynamic rendering feature!");
+            }
+        }
     }
 
     uint32_t queue_family_count = 0;
@@ -594,6 +681,11 @@ VulkanTriangle::VulkanTriangle()
                 enable_device_extensions.push_back(extension_property.extensionName);
             }
         }
+
+        if (this->driver.isDynamicRenderingUseExtension)
+        {
+            enable_device_extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME); //"VK_KHR_dynamic_rendering"
+        }
     }
 
     if (enable_device_extensions.empty())
@@ -607,9 +699,14 @@ VulkanTriangle::VulkanTriangle()
         device_enabled_extension_names.push_back(enable_extension.c_str());
     }
 
+    VkPhysicalDeviceDynamicRenderingFeatures vk_physical_device_dynamic_rendering_features = {};
+    vk_physical_device_dynamic_rendering_features.sType = VkStructureType::VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES;
+    vk_physical_device_dynamic_rendering_features.pNext = nullptr;
+    vk_physical_device_dynamic_rendering_features.dynamicRendering = VK_TRUE;
+
     VkDeviceCreateInfo vk_device_create_info = {};
     vk_device_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    vk_device_create_info.pNext = nullptr;
+    vk_device_create_info.pNext = &vk_physical_device_dynamic_rendering_features;
     vk_device_create_info.flags = 0;
     vk_device_create_info.queueCreateInfoCount = vk_device_queue_create_infos.size();
     vk_device_create_info.pQueueCreateInfos = vk_device_queue_create_infos.data();
@@ -624,6 +721,7 @@ VulkanTriangle::VulkanTriangle()
     {
         throw std::runtime_error("vkCreateDevice failed!");
     }
+
     MyPrint("vkCreateDevice success\n");
 
     {
@@ -782,6 +880,13 @@ VulkanTriangle::VulkanTriangle()
 
         driver.vkCmdDraw = (PFN_vkCmdDraw)driver.vkGetDeviceProcAddr(this->device, "vkCmdDraw");
         assert(driver.vkCmdDraw && "vkCmdDraw");
+
+        if (this->driver.isDynamicRenderingUseExtension)
+        {
+        }
+        else
+        {
+        }
     }
 
     driver.vkGetDeviceQueue = (PFN_vkGetDeviceQueue)driver.vkGetDeviceProcAddr(this->device, "vkGetDeviceQueue");

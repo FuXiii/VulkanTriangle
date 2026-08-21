@@ -34,6 +34,11 @@
 
 ### 日志
 
+> **2026/8/21**
+>
+> >更新 `VulkanTriangleDynamicRendering` 检查动态渲染依赖扩展和特性并激活。
+>
+
 > **2026/8/20**
 >
 > >增加 `VulkanTriangleDynamicRendering` 计划使用动态渲染( `DynamicRendering` )绘制三角形。
