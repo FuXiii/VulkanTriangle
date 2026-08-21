@@ -194,13 +194,13 @@ class VulkanTriangle
     std::vector<VkImageView> swapchainImageViews;
 
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
-    VkRenderPass renderPass = VK_NULL_HANDLE;
+    //VkRenderPass renderPass = VK_NULL_HANDLE;
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 
     VkPipeline pipeline = VK_NULL_HANDLE;
 
-    std::vector<VkFramebuffer> frameBuffers;
+    //std::vector<VkFramebuffer> frameBuffers;
 
     uint32_t surfaceWidth = 0;
     uint32_t surfaceHeight = 0;

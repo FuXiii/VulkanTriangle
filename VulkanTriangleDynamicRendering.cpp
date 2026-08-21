@@ -975,24 +975,14 @@ VulkanTriangle::VulkanTriangle()
 
 VulkanTriangle::~VulkanTriangle()
 {
-    for (VkFramebuffer vk_frame_buffeer_item : this->frameBuffers)
-    {
-        driver.vkDestroyFramebuffer(this->device, vk_frame_buffeer_item, nullptr);
-    }
-
     driver.vkDestroyPipeline(this->device, this->pipeline, nullptr);
 
     driver.vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
-
-    driver.vkDestroyRenderPass(this->device, this->renderPass, nullptr);
-    // driver.vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
 
     for (VkImageView &vk_image_view_item : this->swapchainImageViews)
     {
         driver.vkDestroyImageView(this->device, vk_image_view_item, nullptr);
     }
-
-    // driver.vkFreeCommandBuffers(vk_device, vk_command_pool, 1, &vk_command_buffer);
 
     driver.vkDestroyCommandPool(this->device, this->commandPool, nullptr);
 
@@ -1127,59 +1117,6 @@ void VulkanTriangle::CreateSurface(void *window)
 
     driver.vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)driver.vkGetDeviceProcAddr(this->device, "vkGetSwapchainImagesKHR");
     assert(driver.vkGetSwapchainImagesKHR && "vkGetSwapchainImagesKHR");
-
-    {
-        VkAttachmentReference color_attachment = {};
-        {
-            color_attachment.attachment = 0;
-            color_attachment.layout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        }
-
-        VkSubpassDescription color_pass = {};
-        {
-            color_pass.flags = 0;
-            color_pass.pipelineBindPoint = VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS;
-            color_pass.inputAttachmentCount = 0;
-            color_pass.pInputAttachments = nullptr;
-            color_pass.colorAttachmentCount = 1;
-            color_pass.pColorAttachments = &color_attachment;
-            color_pass.pResolveAttachments = nullptr;
-            color_pass.pDepthStencilAttachment = nullptr;
-            color_pass.preserveAttachmentCount = 0;
-            color_pass.pPreserveAttachments = nullptr;
-        }
-
-        VkAttachmentDescription color_attachment_description = {};
-        {
-            color_attachment_description.flags = 0;
-            color_attachment_description.format = this->targetSwapchainFormat;
-            color_attachment_description.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
-            color_attachment_description.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
-            color_attachment_description.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
-            color_attachment_description.stencilLoadOp = VkAttachmentLoadOp ::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-            color_attachment_description.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
-            color_attachment_description.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
-            color_attachment_description.finalLayout = VkImageLayout::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        }
-
-        std::vector<VkAttachmentDescription> vk_attachment_descriptions;
-        vk_attachment_descriptions.push_back(color_attachment_description);
-
-        {
-            VkRenderPassCreateInfo vk_render_pass_create_info = {};
-            vk_render_pass_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-            vk_render_pass_create_info.pNext = nullptr;
-            vk_render_pass_create_info.flags = 0;
-            vk_render_pass_create_info.attachmentCount = vk_attachment_descriptions.size();
-            vk_render_pass_create_info.pAttachments = vk_attachment_descriptions.data();
-            vk_render_pass_create_info.subpassCount = 1;
-            vk_render_pass_create_info.pSubpasses = &color_pass;
-            vk_render_pass_create_info.dependencyCount = 0;
-            vk_render_pass_create_info.pDependencies = nullptr;
-
-            driver.vkCreateRenderPass(this->device, &vk_render_pass_create_info, nullptr, &this->renderPass);
-        }
-    }
 
     {
         VkShaderModule my_vertex_shader_module = VK_NULL_HANDLE;
@@ -1365,9 +1302,18 @@ void VulkanTriangle::CreateSurface(void *window)
         vk_pipeline_depth_stencil_state_create_info.minDepthBounds = 0;
         vk_pipeline_depth_stencil_state_create_info.maxDepthBounds = 0;
 
+        VkPipelineRenderingCreateInfo vk_pipeline_rendering_create_info = {};
+        vk_pipeline_rendering_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
+        vk_pipeline_rendering_create_info.pNext = nullptr;
+        vk_pipeline_rendering_create_info.viewMask = 0;
+        vk_pipeline_rendering_create_info.colorAttachmentCount = 1;
+        vk_pipeline_rendering_create_info.pColorAttachmentFormats = &this->targetSwapchainFormat;
+        vk_pipeline_rendering_create_info.depthAttachmentFormat = VK_FORMAT_UNDEFINED;
+        vk_pipeline_rendering_create_info.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+
         VkGraphicsPipelineCreateInfo vk_graphics_pipeline_create_info = {};
         vk_graphics_pipeline_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-        vk_graphics_pipeline_create_info.pNext = nullptr;
+        vk_graphics_pipeline_create_info.pNext = &vk_pipeline_rendering_create_info;
         vk_graphics_pipeline_create_info.flags = 0;
         vk_graphics_pipeline_create_info.stageCount = shader_stages.size();
         vk_graphics_pipeline_create_info.pStages = shader_stages.data();
@@ -1381,7 +1327,7 @@ void VulkanTriangle::CreateSurface(void *window)
         vk_graphics_pipeline_create_info.pColorBlendState = &vk_pipeline_color_blend_state_create_info;
         vk_graphics_pipeline_create_info.pDynamicState = &vk_pipeline_dynamic_state_create_info;
         vk_graphics_pipeline_create_info.layout = this->pipelineLayout;
-        vk_graphics_pipeline_create_info.renderPass = this->renderPass;
+        vk_graphics_pipeline_create_info.renderPass = VK_NULL_HANDLE;
         vk_graphics_pipeline_create_info.subpass = 0;
         vk_graphics_pipeline_create_info.basePipelineHandle = VK_NULL_HANDLE;
         vk_graphics_pipeline_create_info.basePipelineIndex = 0;
@@ -1417,12 +1363,6 @@ void VulkanTriangle::ResizeSurface(uint32_t width, uint32_t height)
     this->surfaceHeight = vk_surface_capabilities_khr.currentExtent.height;
 
     {
-        for (auto &vk_frame_buffer : this->frameBuffers)
-        {
-            driver.vkDestroyFramebuffer(this->device, vk_frame_buffer, nullptr);
-        }
-        this->frameBuffers.clear();
-
         for (auto &swapchain_image_view : this->swapchainImageViews)
         {
             driver.vkDestroyImageView(this->device, swapchain_image_view, nullptr);
@@ -1497,32 +1437,6 @@ void VulkanTriangle::ResizeSurface(uint32_t width, uint32_t height)
 
         driver.vkCreateImageView(this->device, &vk_image_view_create_info, nullptr, &this->swapchainImageViews[swapchain_image_view_index]);
     }
-
-    for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < this->swapchainImageViews.size(); swapchain_image_view_index++)
-    {
-        std::vector<VkImageView> frame_buffer;
-        frame_buffer.push_back(this->swapchainImageViews[swapchain_image_view_index]);
-
-        VkFramebufferCreateInfo vk_frame_buffer_create_info = {};
-        vk_frame_buffer_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        vk_frame_buffer_create_info.pNext = nullptr;
-        vk_frame_buffer_create_info.flags = 0;
-        vk_frame_buffer_create_info.renderPass = this->renderPass;
-        vk_frame_buffer_create_info.attachmentCount = frame_buffer.size();
-        vk_frame_buffer_create_info.pAttachments = frame_buffer.data();
-        vk_frame_buffer_create_info.width = vk_surface_capabilities_khr.currentExtent.width;
-        vk_frame_buffer_create_info.height = vk_surface_capabilities_khr.currentExtent.height;
-        vk_frame_buffer_create_info.layers = 1;
-
-        VkFramebuffer vk_frame_buffer = VK_NULL_HANDLE;
-        VkResult frame_buffer_create_result = driver.vkCreateFramebuffer(this->device, &vk_frame_buffer_create_info, nullptr, &vk_frame_buffer);
-        if (frame_buffer_create_result != VkResult::VK_SUCCESS)
-        {
-            throw std::runtime_error("Can not create Framebuffer!");
-        }
-
-        this->frameBuffers.push_back(vk_frame_buffer);
-    }
 }
 
 void VulkanTriangle::Draw(float time)
@@ -1577,12 +1491,6 @@ void VulkanTriangle::Draw(float time)
 
         //  TODO: resize in here
         {
-            for (auto &vk_frame_buffer : this->frameBuffers)
-            {
-                driver.vkDestroyFramebuffer(this->device, vk_frame_buffer, nullptr);
-            }
-            this->frameBuffers.clear();
-
             for (auto &swapchain_image_view : this->swapchainImageViews)
             {
                 driver.vkDestroyImageView(this->device, swapchain_image_view, nullptr);
@@ -1672,32 +1580,6 @@ void VulkanTriangle::Draw(float time)
 
                 driver.vkCreateImageView(this->device, &vk_image_view_create_info, nullptr, &this->swapchainImageViews[swapchain_image_view_index]);
             }
-
-            for (uint32_t swapchain_image_view_index = 0; swapchain_image_view_index < swapchainImageViews.size(); swapchain_image_view_index++)
-            {
-                std::vector<VkImageView> frame_buffers;
-                frame_buffers.push_back(swapchainImageViews[swapchain_image_view_index]);
-
-                VkFramebufferCreateInfo vk_frame_buffer_create_info = {};
-                vk_frame_buffer_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-                vk_frame_buffer_create_info.pNext = nullptr;
-                vk_frame_buffer_create_info.flags = 0;
-                vk_frame_buffer_create_info.renderPass = this->renderPass;
-                vk_frame_buffer_create_info.attachmentCount = frame_buffers.size();
-                vk_frame_buffer_create_info.pAttachments = frame_buffers.data();
-                vk_frame_buffer_create_info.width = vk_surface_capabilities_khr.currentExtent.width;
-                vk_frame_buffer_create_info.height = vk_surface_capabilities_khr.currentExtent.height;
-                vk_frame_buffer_create_info.layers = 1;
-
-                VkFramebuffer vk_frame_buffer = VK_NULL_HANDLE;
-                VkResult frame_buffer_create_result = driver.vkCreateFramebuffer(this->device, &vk_frame_buffer_create_info, nullptr, &vk_frame_buffer);
-                if (frame_buffer_create_result != VkResult::VK_SUCCESS)
-                {
-                    throw std::runtime_error("Can not create Framebuffer!");
-                }
-
-                this->frameBuffers.push_back(vk_frame_buffer);
-            }
         }
         return;
     }
@@ -1736,22 +1618,32 @@ void VulkanTriangle::Draw(float time)
     color_clear_value.color.float32[2] = 0;
     color_clear_value.color.float32[3] = 0;
 
-    std::vector<VkClearValue> vk_clear_values;
-    vk_clear_values.push_back(color_clear_value);
+    VkRenderingAttachmentInfo vk_rendering_attachment_info = {};
+    vk_rendering_attachment_info.sType = VkStructureType::VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    vk_rendering_attachment_info.pNext = 0;
+    vk_rendering_attachment_info.imageView = this->swapchainImageViews[next_image_index];
+    vk_rendering_attachment_info.imageLayout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    vk_rendering_attachment_info.resolveMode = VkResolveModeFlagBits::VK_RESOLVE_MODE_NONE;
+    vk_rendering_attachment_info.resolveImageView = VK_NULL_HANDLE;
+    vk_rendering_attachment_info.resolveImageLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+    vk_rendering_attachment_info.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+    vk_rendering_attachment_info.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+    vk_rendering_attachment_info.clearValue = color_clear_value;
 
-    VkRenderPassBeginInfo vk_render_pass_begin_info = {};
-    vk_render_pass_begin_info.sType = VkStructureType::VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    vk_render_pass_begin_info.pNext = nullptr;
-    vk_render_pass_begin_info.renderPass = this->renderPass;
-    vk_render_pass_begin_info.framebuffer = this->frameBuffers[next_image_index];
-    vk_render_pass_begin_info.renderArea.offset.x = 0;
-    vk_render_pass_begin_info.renderArea.offset.y = 0;
-    vk_render_pass_begin_info.renderArea.extent.width = this->surfaceWidth;
-    vk_render_pass_begin_info.renderArea.extent.height = this->surfaceHeight;
-    // vk_render_pass_begin_info.renderArea.extent.width = 512;
-    // vk_render_pass_begin_info.renderArea.extent.height = 512;
-    vk_render_pass_begin_info.clearValueCount = vk_clear_values.size();
-    vk_render_pass_begin_info.pClearValues = vk_clear_values.data();
+    VkRenderingInfo vk_rendering_info = {};
+    vk_rendering_info.sType = VkStructureType::VK_STRUCTURE_TYPE_RENDERING_INFO;
+    vk_rendering_info.pNext = 0;
+    vk_rendering_info.flags = 0;
+    vk_rendering_info.renderArea.offset.x = 0;
+    vk_rendering_info.renderArea.offset.y = 0;
+    vk_rendering_info.renderArea.extent.width = this->surfaceWidth;
+    vk_rendering_info.renderArea.extent.height = this->surfaceHeight;
+    vk_rendering_info.layerCount = 1;
+    vk_rendering_info.viewMask = 0;
+    vk_rendering_info.colorAttachmentCount = 1;
+    vk_rendering_info.pColorAttachments = &vk_rendering_attachment_info;
+    vk_rendering_info.pDepthAttachment = nullptr;
+    vk_rendering_info.pStencilAttachment = nullptr;
 
     VkViewport vk_viewport = {};
     vk_viewport.x = 0;
@@ -1767,15 +1659,27 @@ void VulkanTriangle::Draw(float time)
     scissor.extent.width = this->surfaceWidth;
     scissor.extent.height = this->surfaceHeight;
 
-    driver.vkCmdBeginRenderPass(vk_command_buffer, &vk_render_pass_begin_info, VkSubpassContents::VK_SUBPASS_CONTENTS_INLINE);
+    if (this->driver.isDynamicRenderingUseExtension)
+    {
+        this->driver.vkCmdBeginRenderingKHR(vk_command_buffer, &vk_rendering_info);
+    }
+    else
+    {
+        this->driver.vkCmdBeginRendering(vk_command_buffer, &vk_rendering_info);
+    }
     driver.vkCmdBindPipeline(vk_command_buffer, VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS, this->pipeline);
     driver.vkCmdSetViewport(vk_command_buffer, 0, 1, &vk_viewport);
     driver.vkCmdSetScissor(vk_command_buffer, 0, 1, &scissor);
     driver.vkCmdPushConstants(vk_command_buffer, this->pipelineLayout, VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(float), &scale);
     driver.vkCmdDraw(vk_command_buffer, 3, 1, 0, 0);
-
-    driver.vkCmdEndRenderPass(vk_command_buffer);
-
+    if (this->driver.isDynamicRenderingUseExtension)
+    {
+        this->driver.vkCmdEndRenderingKHR(vk_command_buffer);
+    }
+    else
+    {
+        this->driver.vkCmdEndRendering(vk_command_buffer);
+    }
     driver.vkEndCommandBuffer(vk_command_buffer);
 
     VkFence fence = VK_NULL_HANDLE;

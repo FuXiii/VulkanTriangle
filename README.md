@@ -40,6 +40,8 @@
 >
 > >更新 `VulkanTriangleDynamicRendering` 加载动态渲染函数。
 >
+> >更新 `VulkanTriangleDynamicRendering` 绘制三角形。（`image view layout`  还未同步转换）
+>
 
 > **2026/8/20**
 >
