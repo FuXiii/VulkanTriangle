@@ -563,6 +563,7 @@ VulkanTriangle::VulkanTriangle()
             driver.vkEnumerateDeviceExtensionProperties(this->targetPhysicalDevice, nullptr, &device_extension_count, extension_properties.data());
 
             bool is_support_dynamic_rendering = false;
+            bool is_support_synchronization2 = false;
             if (instance_version_minor < 3 && physical_device_version_minor < 3)
             {
                 // NOTE: check for dynamic rendering extension support
@@ -576,6 +577,15 @@ VulkanTriangle::VulkanTriangle()
                             this->driver.isDynamicRenderingUseExtension = true;
                         }
                     }
+
+                    if (!is_support_synchronization2)
+                    {
+                        if (std::string(extension_property.extensionName) == std::string(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME)) // "VK_KHR_synchronization2"
+                        {
+                            is_support_synchronization2 = true;
+                            this->driver.isSynchronization2UseExtension = true;
+                        }
+                    }
                     else
                     {
                         break;
@@ -585,6 +595,7 @@ VulkanTriangle::VulkanTriangle()
             else
             {
                 is_support_dynamic_rendering = true;
+                is_support_synchronization2 = true;
                 this->driver.isDynamicRenderingUseExtension = false;
             }
 
@@ -594,6 +605,10 @@ VulkanTriangle::VulkanTriangle()
             }
             else
             {
+                if (is_support_synchronization2)
+                {
+                    this->driver.isUseSynchronization2 = true;
+                }
                 break;
             }
         }
@@ -691,15 +706,20 @@ VulkanTriangle::VulkanTriangle()
             }
         }
 
+        if (enable_device_extensions.empty())
+        {
+            throw std::runtime_error("Can not find Swapchain extension!");
+        }
+
         if (this->driver.isDynamicRenderingUseExtension)
         {
             enable_device_extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME); //"VK_KHR_dynamic_rendering"
         }
-    }
 
-    if (enable_device_extensions.empty())
-    {
-        throw std::runtime_error("Can not find Swapchain extension!");
+        if (this->driver.isUseSynchronization2 && this->driver.isSynchronization2UseExtension)
+        {
+            enable_device_extensions.push_back(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME); //"VK_KHR_synchronization2"
+        }
     }
 
     std::vector<const char *> device_enabled_extension_names;
@@ -904,6 +924,24 @@ VulkanTriangle::VulkanTriangle()
             driver.vkCmdEndRendering = (PFN_vkCmdEndRendering)driver.vkGetDeviceProcAddr(this->device, "vkCmdEndRendering");
             assert(driver.vkCmdEndRendering && "vkCmdEndRendering");
         }
+
+        if (this->driver.isUseSynchronization2)
+        {
+            if (this->driver.isSynchronization2UseExtension)
+            {
+                driver.vkCmdPipelineBarrier2KHR = (PFN_vkCmdPipelineBarrier2KHR)driver.vkGetDeviceProcAddr(this->device, "vkCmdPipelineBarrier2KHR");
+                assert(driver.vkCmdPipelineBarrier2KHR && "vkCmdPipelineBarrier2KHR");
+            }
+            else
+            {
+                driver.vkCmdPipelineBarrier2 = (PFN_vkCmdPipelineBarrier2)driver.vkGetDeviceProcAddr(this->device, "vkCmdPipelineBarrier2");
+                assert(driver.vkCmdPipelineBarrier2 && "vkCmdPipelineBarrier2");
+            }
+        }
+        else
+        {
+            // NOTE: Use Vulkan 1.0 vkCmdPipelineBarrier(...)
+        }
     }
 
     driver.vkGetDeviceQueue = (PFN_vkGetDeviceQueue)driver.vkGetDeviceProcAddr(this->device, "vkGetDeviceQueue");
@@ -921,6 +959,7 @@ VulkanTriangle::VulkanTriangle()
     driver.vkGetDeviceQueue(this->device, graphics_queue_family_index, 0, &this->queue);
 
     uint32_t queue_family_index = graphics_queue_family_index;
+    this->queueFamilyIndex = queue_family_index;
 
     VkPhysicalDeviceMemoryProperties vk_physical_device_memory_properties = {};
     driver.vkGetPhysicalDeviceMemoryProperties(this->targetPhysicalDevice, &vk_physical_device_memory_properties);
@@ -1679,6 +1718,41 @@ void VulkanTriangle::Draw(float time)
     else
     {
         this->driver.vkCmdEndRendering(vk_command_buffer);
+    }
+
+    {
+
+        //if (this->driver.isUseSynchronization2)
+        //{
+        //    if (this->driver.isSynchronization2UseExtension)
+        //    {
+        //        driver.vkCmdPipelineBarrier2KHR;
+        //    }
+        //    else
+        //    {
+        //        driver.vkCmdPipelineBarrier2;
+        //    }
+        //}
+        //else
+        {
+            //VkImageMemoryBarrier vk_image_memory_barrier = {};
+            //vk_image_memory_barrier.sType = VkStructureType::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            //vk_image_memory_barrier.pNext = nullptr;
+            //vk_image_memory_barrier.srcAccessMask = VkAccessFlagBits::VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            //vk_image_memory_barrier.dstAccessMask = VkAccessFlagBits::VK_ACCESS_TRANSFER_READ_BIT;
+            //vk_image_memory_barrier.oldLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+            //vk_image_memory_barrier.newLayout = VkImageLayout::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+            //vk_image_memory_barrier.srcQueueFamilyIndex = this->queueFamilyIndex;
+            //vk_image_memory_barrier.dstQueueFamilyIndex = this->queueFamilyIndex;
+            //vk_image_memory_barrier.image = this->swapchainImages[next_image_index];
+            //vk_image_memory_barrier.subresourceRange.aspectMask = VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT;
+            //vk_image_memory_barrier.subresourceRange.baseMipLevel = 0;
+            //vk_image_memory_barrier.subresourceRange.levelCount = 1;
+            //vk_image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+            //vk_image_memory_barrier.subresourceRange.layerCount = 1;
+//
+            //driver.vkCmdPipelineBarrier(vk_command_buffer, VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VkPipelineStageFlagBits::VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &vk_image_memory_barrier);
+        }
     }
     driver.vkEndCommandBuffer(vk_command_buffer);
 

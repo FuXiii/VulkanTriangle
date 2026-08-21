@@ -175,6 +175,11 @@ struct VkDriver
     PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR = nullptr;
     PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR = nullptr;
     bool isDynamicRenderingUseExtension = false;
+
+    PFN_vkCmdPipelineBarrier2 vkCmdPipelineBarrier2 = nullptr;
+    PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR = nullptr;
+    bool isUseSynchronization2 = false;
+    bool isSynchronization2UseExtension = false;
 };
 
 class VulkanTriangle
@@ -185,6 +190,7 @@ class VulkanTriangle
     VkInstance instance = VK_NULL_HANDLE;
     VkPhysicalDevice targetPhysicalDevice = VK_NULL_HANDLE;
     VkDevice device = VK_NULL_HANDLE;
+    uint32_t queueFamilyIndex = 65536;
     VkQueue queue = VK_NULL_HANDLE;
     VkCommandPool commandPool = VK_NULL_HANDLE;
 
@@ -194,13 +200,13 @@ class VulkanTriangle
     std::vector<VkImageView> swapchainImageViews;
 
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
-    //VkRenderPass renderPass = VK_NULL_HANDLE;
+    // VkRenderPass renderPass = VK_NULL_HANDLE;
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 
     VkPipeline pipeline = VK_NULL_HANDLE;
 
-    //std::vector<VkFramebuffer> frameBuffers;
+    // std::vector<VkFramebuffer> frameBuffers;
 
     uint32_t surfaceWidth = 0;
     uint32_t surfaceHeight = 0;
