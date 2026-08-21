@@ -38,6 +38,8 @@
 >
 > >更新 `VulkanTriangleDynamicRendering` 检查动态渲染依赖扩展和特性并激活。
 >
+> >更新 `VulkanTriangleDynamicRendering` 加载动态渲染函数。
+>
 
 > **2026/8/20**
 >

@@ -163,13 +163,17 @@ struct VkDriver
     PFN_vkCmdPushConstants vkCmdPushConstants = nullptr;
     PFN_vkCmdDraw vkCmdDraw = nullptr;
 
-    //PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2 = nullptr;
-    //PFN_vkGetPhysicalDeviceProperties2KHR vkGetPhysicalDeviceProperties2KHR = nullptr;
+    // PFN_vkGetPhysicalDeviceProperties2 vkGetPhysicalDeviceProperties2 = nullptr;
+    // PFN_vkGetPhysicalDeviceProperties2KHR vkGetPhysicalDeviceProperties2KHR = nullptr;
 
     PFN_vkGetPhysicalDeviceFeatures2 vkGetPhysicalDeviceFeatures2 = nullptr;
     PFN_vkGetPhysicalDeviceFeatures2KHR vkGetPhysicalDeviceFeatures2KHR = nullptr;
     bool isGetPhysicalDeviceProperties2UseExtension = false;
 
+    PFN_vkCmdBeginRendering vkCmdBeginRendering = nullptr;
+    PFN_vkCmdEndRendering vkCmdEndRendering = nullptr;
+    PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR = nullptr;
+    PFN_vkCmdEndRenderingKHR vkCmdEndRenderingKHR = nullptr;
     bool isDynamicRenderingUseExtension = false;
 };
 

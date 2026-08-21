@@ -712,52 +712,6 @@ VulkanTriangle::VulkanTriangle()
     vk_command_pool_create_info.flags = 0;
     vk_command_pool_create_info.queueFamilyIndex = queue_family_index;
     driver.vkCreateCommandPool(this->device, &vk_command_pool_create_info, nullptr, &this->commandPool);
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    {
-        // std::vector<VkDescriptorPoolSize> vk_descriptor_pool_sizes = {};
-        //{
-        //     VkDescriptorPoolSize vk_descriptor_pool_size;
-        //     vk_descriptor_pool_size.descriptorCount = 1000;
-        //
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //    vk_descriptor_pool_size.type = VkDescriptorType::VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-        //    vk_descriptor_pool_sizes.push_back(vk_descriptor_pool_size);
-        //}
-        //
-        // VkDescriptorPoolCreateInfo vk_descriptor_pool_create_info = {};
-        // vk_descriptor_pool_create_info.sType = VkStructureType::VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        // vk_descriptor_pool_create_info.pNext = nullptr;
-        // vk_descriptor_pool_create_info.flags = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        // vk_descriptor_pool_create_info.maxSets = vk_descriptor_pool_sizes.size() * 1000;
-        // vk_descriptor_pool_create_info.poolSizeCount = vk_descriptor_pool_sizes.size();
-        // vk_descriptor_pool_create_info.pPoolSizes = vk_descriptor_pool_sizes.data();
-        //
-        // VkResult result = driver.vkCreateDescriptorPool(this->device, &vk_descriptor_pool_create_info, nullptr, &this->descriptorPool);
-        // if (result != VkResult::VK_SUCCESS)
-        //{
-        //    throw std::runtime_error("Can not create VkDescriptorPool!");
-        //}
-    }
 }
 
 VulkanTriangle::~VulkanTriangle()
